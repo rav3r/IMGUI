@@ -1,11 +1,13 @@
 #include <SFML/Graphics.hpp>
 
+#include "gfxlib.h"
+
+sf::RenderWindow* gWindow = 0;
+
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!");
-	sf::RectangleShape shape(sf::Vector2f(400, 300));
-	shape.setPosition(sf::Vector2f(200, 150));
-	shape.setFillColor(sf::Color::Green);
+	gWindow = &window;
 
 	while (window.isOpen())
 	{
@@ -17,8 +19,11 @@ int main()
 		}
 
 		window.clear();
-		window.draw(shape);
+		
+		gfxDrawRectangle(100, 100, 5, 100, 0);
+
 		window.display();
+
 	}
 
 	return 0;
