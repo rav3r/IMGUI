@@ -176,6 +176,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\src\igContext.h"
+			>
+		</File>
+		<File
+			RelativePath=".\src\IMGUI.h"
+			>
+		</File>
+		<File
 			RelativePath=".\src\main.cpp"
 			>
 		</File>
