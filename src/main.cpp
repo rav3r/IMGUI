@@ -15,7 +15,7 @@ int main()
 
 	sf::Font font;
 	gFont = &font;
-	if(!font.loadFromFile("Amble-Bold.ttf"))
+	if(!font.loadFromFile("data/Cabin-Regular.otf"))
         	return EXIT_FAILURE;
 
 	igContext gui;
