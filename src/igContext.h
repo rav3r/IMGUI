@@ -22,6 +22,7 @@ struct igContext
     
 	bool Button(igIdent id, float x, float y, float width, float height, const char* title);
 	bool Checkbox(igIdent id, float x, float y, float width, float height, bool value);
+	bool VSlider(igIdent id, float x, float y, float width, float height, float aspect, float& value);
 };
 
 #endif

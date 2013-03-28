@@ -88,3 +88,34 @@ bool igContext::Checkbox(igIdent id, float x, float y, float width, float height
 	return leftDown == false && hotItem == id && activeItem == id;
 }
 
+bool igContext::VSlider(igIdent id, float x, float y, float width, float height, float aspect, float& value)
+{
+	float prevValue = value;
+	float thumbSize = height * aspect;
+
+	if(MouseInside(x, y, width, height))
+	{
+		hotItem = id;
+		if(leftDown && activeItem == nullId)
+		{
+			activeItem = id;
+		}
+	}
+
+	if(leftDown && activeItem == id)
+	{
+		value = (mouseY - y)/height - aspect/2.0f;
+
+		if(value < 0) value = 0;
+		if(value > 1.0f - aspect) value = 1.0f - aspect;
+	}
+
+	// draw vertical slider
+	const float margin = 2.0f;
+
+	gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
+	gfxDrawRectangle(x+margin, y+value*height, width-margin*2, thumbSize, GFX_STYLE_SLIDER_THUMB);
+
+	return prevValue != value;
+}
+
