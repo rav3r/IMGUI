@@ -119,3 +119,33 @@ bool igContext::VSlider(igIdent id, float x, float y, float width, float height,
 	return prevValue != value;
 }
 
+bool igContext::HSlider(igIdent id, float x, float y, float width, float height, float aspect, float& value)
+{
+	float prevValue = value;
+	float thumbSize = width * aspect;
+
+	if(MouseInside(x, y, width, height))
+	{
+		hotItem = id;
+		if(leftDown && activeItem == nullId)
+		{
+			activeItem = id;
+		}
+	}
+
+	if(leftDown && activeItem == id)
+	{
+		value = (mouseX - x)/width - aspect/2.0f;
+
+		if(value < 0) value = 0;
+		if(value > 1.0f - aspect) value = 1.0f - aspect;
+	}
+
+	// draw vertical slider
+	const float margin = 2.0f;
+
+	gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
+	gfxDrawRectangle(x+value*width, y+margin, thumbSize, height-margin*2.0f, GFX_STYLE_SLIDER_THUMB);
+
+	return prevValue != value;
+}

@@ -21,7 +21,8 @@ int main()
 	igContext gui;
 
 	bool checkboxValue = true;
-	float sliderValue = 0.0f;
+	float vSliderValue = 0.0f;
+	float hSliderValue = 0.0f;
 	
 	while (window.isOpen())
 	{
@@ -69,8 +70,10 @@ int main()
 				std::cout << "button 5 clicked\n";
 		}
 
-		if(gui.VSlider(GEN_ID(sliderValue), 10, 10, 20, 400, 0.3f, sliderValue))
-			std::cout << "Val changed: "<<sliderValue<<"\n";
+		if(gui.VSlider(GEN_ID(vSliderValue), 10, 10, 20, 400, 0.3f, vSliderValue))
+			std::cout << "V val changed: "<<vSliderValue<<"\n";
+		if(gui.HSlider(GEN_ID(hSliderValue), 100, 10, 400, 20, 0.1f, hSliderValue))
+			std::cout << "H val changed: "<<hSliderValue<<"\n";
 
 		gui.End();
 		window.display();
