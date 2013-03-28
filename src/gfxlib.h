@@ -2,6 +2,7 @@
 #define __GFXLIB_H__
 
 #define GFX_STYLE_NONE 0
+#define GFX_STYLE_ELEM_PRESSED 1
 
 // External functions used by lib
 
