@@ -40,7 +40,7 @@ int main()
 		    }
 			if(event.type == sf::Event::MouseButtonPressed)
 			{
-				if(event.mouseButton.button == sf::Mouse::Button::Left)
+				if(event.mouseButton.button == sf::Mouse::Left)
 					gui.leftDown = true;
 			}
 			if(event.type == sf::Event::MouseButtonReleased)
