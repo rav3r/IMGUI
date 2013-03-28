@@ -23,6 +23,8 @@ int main()
 	bool checkboxValue = true;
 	float vSliderValue = 0.0f;
 	float hSliderValue = 0.0f;
+	std::string textboxValue = "Textbox";
+	std::string textboxValue2 = "Another :)";
 	
 	while (window.isOpen())
 	{
@@ -43,8 +45,17 @@ int main()
 			}
 			if(event.type == sf::Event::MouseButtonReleased)
 			{
-				if(event.mouseButton.button == sf::Mouse::Button::Left)
+				if(event.mouseButton.button == sf::Mouse::Left)
 					gui.leftDown = false;
+			}
+			if(event.type == sf::Event::TextEntered)
+			{
+				gui.charEntered = event.text.unicode;
+			}
+			if(event.type == sf::Event::KeyPressed)
+			{
+				if(event.key.code == sf::Keyboard::Back)
+					gui.backspace = true;
 			}
 		}
 
@@ -74,6 +85,16 @@ int main()
 			std::cout << "V val changed: "<<vSliderValue<<"\n";
 		if(gui.HSlider(GEN_ID(hSliderValue), 100, 10, 400, 20, 0.1f, hSliderValue))
 			std::cout << "H val changed: "<<hSliderValue<<"\n";
+
+		if(gui.TextBox(GEN_ID(textboxValue), 600, 10, 100, 20, textboxValue))
+			;
+
+		if(gui.TextBox(GEN_ID(textboxValue), 600, 40, 100, 20, textboxValue))
+			;
+
+		if(gui.TextBox(GEN_ID(textboxValue2), 600, 70, 100, 20, textboxValue2))
+			;
+
 
 		gui.End();
 		window.display();
