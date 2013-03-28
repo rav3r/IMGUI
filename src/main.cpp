@@ -1,3 +1,4 @@
+#include <iostream>
 #include <SFML/Graphics.hpp>
 
 #include "gfxlib.h"
@@ -31,12 +32,33 @@ int main()
 		        gui.mouseX = event.mouseMove.x;
 		        gui.mouseY = event.mouseMove.y;
 		    }
+			if(event.type == sf::Event::MouseButtonPressed)
+			{
+				if(event.mouseButton.button == sf::Mouse::Button::Left)
+					gui.leftDown = true;
+			}
+			if(event.type == sf::Event::MouseButtonReleased)
+			{
+				if(event.mouseButton.button == sf::Mouse::Button::Left)
+					gui.leftDown = false;
+			}
 		}
 
 		window.clear(sf::Color(128, 128, 128, 255));
-		
-		if(gui.Button(GEN_NULL_ID, 100, 100, 100, 30, "Click me!")) ;
+		gui.Begin();
 
+		if(gui.Button(GEN_NULL_ID, 100, 100, 100, 30, "Click me 1!"))
+			std::cout << "button 1 clicked\n";
+		if(gui.Button(GEN_NULL_ID, 100, 150, 100, 30, "Click me 2!"))
+			std::cout << "button 2 clicked\n";
+		if(gui.Button(GEN_NULL_ID, 100, 200, 100, 30, "Click me 3!"))
+			std::cout << "button 3 clicked\n";
+		if(gui.Button(GEN_NULL_ID, 100, 250, 100, 30, "Click me 4!"))
+			std::cout << "button 4 clicked\n";
+		if(gui.Button(GEN_NULL_ID, 100, 300, 100, 30, "Click me 5!"))
+			std::cout << "button 5 clicked\n";
+
+		gui.End();
 		window.display();
 
 	}

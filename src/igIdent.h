@@ -21,4 +21,9 @@ struct igIdent
 	
 };
 
+inline bool operator==(const igIdent& a, const igIdent& b)
+{
+	return a.variable == b.variable && a.line == b.line;
+}
+
 #endif

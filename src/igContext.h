@@ -13,7 +13,12 @@ struct igContext
 	igIdent hotItem;
 	igIdent activeItem;
 
+	igContext();
+
     bool MouseInside(float x, float y, float width, float height);
+
+	void Begin();
+	void End();
     
 	bool Button(igIdent id, float x, float y, float width, float height, const char* title);
 };

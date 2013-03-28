@@ -176,7 +176,15 @@
 			>
 		</File>
 		<File
+			RelativePath=".\src\igContext.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\src\igContext.h"
+			>
+		</File>
+		<File
+			RelativePath=".\src\igIdent.h"
 			>
 		</File>
 		<File
