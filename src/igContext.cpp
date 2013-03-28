@@ -57,3 +57,34 @@ bool igContext::Button(igIdent id, float x, float y,
 	return leftDown == false && hotItem == id && activeItem == id;
 }
 
+bool igContext::Checkbox(igIdent id, float x, float y, float width, float height, bool value)
+{
+	if(MouseInside(x, y, width, height))
+	{
+		hotItem = id;
+		if(leftDown && activeItem == nullId)
+			activeItem = id;
+	}
+
+	// draw checkbox
+	const float margin = 2.0f;
+
+	if(activeItem == id)
+	{
+		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_PRESSED);
+	} else if(hotItem == id)
+	{
+		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_HOVER);
+	} else
+	{
+		gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
+	}
+	
+	if(value)
+	{
+		gfxDrawRectangle(x+margin, y+margin, width-margin*2, height-margin*2, GFX_STYLE_CHECKBOX);
+	}
+
+	return leftDown == false && hotItem == id && activeItem == id;
+}
+

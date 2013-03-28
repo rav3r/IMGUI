@@ -4,6 +4,7 @@
 #define GFX_STYLE_NONE 0
 #define GFX_STYLE_ELEM_PRESSED 1
 #define GFX_STYLE_ELEM_HOVER 2
+#define GFX_STYLE_CHECKBOX 3
 
 // External functions used by lib
 

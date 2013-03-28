@@ -17,6 +17,7 @@ static sf::Color textColor(159, 105, 214, 255);
 static sf::Color elementColor(58, 4, 112, 255);
 static sf::Color pressedElemColor(139, 66, 214, 255);
 static sf::Color hoverElemColor(92, 13, 172, 255);
+static sf::Color checkboxColor(159, 105, 214, 255);
 
 void gfxDrawRectangle(float x, float y, float width, float height, int style)
 {
@@ -26,8 +27,10 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style)
 	    shape.setFillColor(elementColor);
 	else if(style == GFX_STYLE_ELEM_PRESSED)
 	    shape.setFillColor(pressedElemColor);
-	else
+	else if(style == GFX_STYLE_ELEM_HOVER)
 	    shape.setFillColor(hoverElemColor);
+	else
+		shape.setFillColor(checkboxColor);
 	    
 	gWindow->draw(shape);
 }
