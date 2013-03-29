@@ -56,6 +56,12 @@ int main()
 			{
 				if(event.key.code == sf::Keyboard::Back)
 					gui.backspace = true;
+				if(event.key.code == sf::Keyboard::Left)
+					gui.textCharPos--;
+				if(event.key.code == sf::Keyboard::Right)
+					gui.textCharPos++;
+				if(event.key.code == sf::Keyboard::Delete)
+					gui.charEntered = 127;
 			}
 		}
 
@@ -95,10 +101,8 @@ int main()
 		if(gui.TextBox(GEN_ID(textboxValue2), 600, 70, 100, 20, textboxValue2))
 			;
 
-
 		gui.End();
 		window.display();
-
 	}
 
 	return 0;

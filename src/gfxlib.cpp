@@ -1,5 +1,6 @@
 #include "gfxlib.h"
 
+#include <iostream>
 #include <SFML/Graphics.hpp>
 
 extern sf::RenderWindow* gWindow;
@@ -35,11 +36,27 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style)
 	gWindow->draw(shape);
 }
 
-void gfxPrint(float x, float y, const char* str, int style)
+void gfxPrint(float x, float y, const char* str, int style, int pipePos)
 {
-	sf::Text text(str, *gFont, 16);
+	const int charSize = 16;
+
+	sf::Text text(str, *gFont, charSize);
 	text.setPosition(sf::Vector2f(x, y));
 	text.setColor(textColor);
 	
 	gWindow->draw(text);
+
+	if(pipePos >= 0)
+	{
+		std::string curr = str;
+		curr = curr.substr(0, pipePos);
+		sf::Text currText(curr+".", *gFont, charSize);
+		sf::Text _Text("_", *gFont, charSize);
+		sf::Text dotText(".", *gFont, charSize);
+
+		_Text.setColor(sf::Color::Red);
+		float xDiff = currText.getLocalBounds().width - dotText.getLocalBounds().width;
+		_Text.setPosition(sf::Vector2f(x + xDiff, y));
+		gWindow->draw(_Text);
+	} 
 }

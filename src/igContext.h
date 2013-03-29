@@ -17,6 +17,8 @@ struct igContext
 	bool backspace;
 	wchar_t charEntered;
 
+	int textCharPos;
+
 	igIdent hotItem;
 	igIdent activeItem;
 	igIdent keyboardItem;

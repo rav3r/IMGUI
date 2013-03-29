@@ -16,6 +16,8 @@ igContext::igContext()
 
 	charEntered = 0;
 	backspace = false;
+
+	textCharPos = 0;
 }
 
 bool igContext::MouseInside(float x, float y, float width, float height)
@@ -26,6 +28,8 @@ bool igContext::MouseInside(float x, float y, float width, float height)
 void igContext::Begin()
 {
 	hotItem = nullId;
+	if(textCharPos < 0)
+		textCharPos = 0;
 }
 
 void igContext::End()
@@ -171,31 +175,36 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 		{
 			activeItem = id;
 			keyboardItem = id;
+			textCharPos = value.size();
 		}
 	}
 
 	if(keyboardItem == id)
 	{
-		//std::wstring charset = L""
+		if(textCharPos > value.size())
+			textCharPos = value.size();
+
 		if(charEntered)
 		{
 			for(int i=0; i<charset.size(); i++)
 				if(charset[i] == charEntered)
 				{
-					value += charEntered;
+					value.insert(textCharPos, 1, (char)charEntered);
+					textCharPos++;
 					break;
 				}
 		}
 
-		if(charEntered == 8 && value.empty() == false) // backspace
-			value.erase(value.length()-1);
-// /*
-// 		if(backspace && value.empty() == false)
-// 		{
-// 			std::cout << value.length()<<"\n";
-// 			value.erase(value.length()-1);
-// 			std::cout << value.length()<<"\n";
-// 		}*/
+		if(charEntered == 8 && textCharPos > 0) // backspace
+		{
+			textCharPos--;
+			value.erase(textCharPos, 1);
+		}
+
+		if(charEntered == 127) // delete
+		{
+			value.erase(textCharPos, 1);
+		}
 	}
 
 	// draw text box
@@ -210,7 +219,7 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 		gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
 	}
 
-	gfxPrint(x, y, value.c_str(), GFX_STYLE_NONE); 
+	gfxPrint(x, y, value.c_str(), GFX_STYLE_NONE, keyboardItem == id ? textCharPos : -1); 
 
 	return prevValue != value;
 }
