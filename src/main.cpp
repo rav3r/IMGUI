@@ -11,6 +11,7 @@ sf::Font* gFont = 0;
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!");
+	sf::View view;
 	gWindow = &window;
 
 	sf::Font font;
@@ -33,7 +34,12 @@ int main()
 		{
 			if(event.type == sf::Event::Closed)
 				window.close();
-		    if(event.type == sf::Event::MouseMoved)
+			if(event.type == sf::Event::Resized)
+			{
+				view.reset(sf::FloatRect(0, 0, event.size.width, event.size.height));
+				window.setView(view);
+			}
+			if(event.type == sf::Event::MouseMoved)
 		    {
 		        gui.mouseX = event.mouseMove.x;
 		        gui.mouseY = event.mouseMove.y;
