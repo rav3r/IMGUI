@@ -29,6 +29,8 @@ int main()
 
 	int choice = 0;
 	bool checkboxIds[5];
+
+	float moveX = 650, moveY = 500; 
 	
 	while (window.isOpen())
 	{
@@ -80,6 +82,13 @@ int main()
 		gui.Drag(GEN_NULL_ID, 500, 500, 40, 20, "drag");
 		gui.Drag(GEN_NULL_ID, 550, 500, 40, 20, "drag");
 		gui.Drag(GEN_NULL_ID, 600, 500, 40, 20, "drag");
+
+		if(gui.Move(GEN_NULL_ID, moveX, moveY, 50, 20, "move"))
+		{
+			moveY = int(moveY/10+0.5f)*10;
+			moveX = int(moveX/10+0.5f)*10;
+			std::cout << moveX << " " << moveY << "\n";
+		}
 
 		if(gui.Checkbox(GEN_ID(checkboxValue), 300, 100, 10, 10, checkboxValue))
 		{

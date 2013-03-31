@@ -289,3 +289,54 @@ bool igContext::Drag(igIdent id, float x, float y, float width, float height, co
 
 	return result;
 }
+
+bool igContext::Move(igIdent id, float& x, float& y, float width, float height, const char* title)
+{
+	float prevX = x, prevY = y;
+	bool result = false;
+
+	if(dragItem == id)
+	{
+		x = mouseX - dragX;
+		y = mouseY - dragY;
+
+		if(leftDown == false)
+		{
+			dragItem = nullId;
+		}
+		result = true;
+	} else
+	{
+		if(MouseInside(x, y, width, height))
+		{
+			hotItem = id;
+			if(leftDown && dragItem == nullId)
+			{
+				activeItem = dragItem = id;
+
+				dragX = mouseX - x;
+				dragY = mouseY - y;
+				
+				dragMoved = false;
+
+				result = true;
+			}
+		}
+	}
+
+	// draw button
+	if(activeItem == id)
+	{
+		gfxDrawRectangle(prevX, prevY, width, height, GFX_STYLE_ELEM_PRESSED);
+	} else if(hotItem == id)
+	{
+		gfxDrawRectangle(prevX, prevY, width, height, GFX_STYLE_ELEM_HOVER);
+	} else
+	{
+		gfxDrawRectangle(prevX, prevY, width, height, GFX_STYLE_NONE);
+	}
+
+	gfxPrint(prevX, prevY, title, GFX_STYLE_NONE);
+	
+	return prevX != x || prevY != y;
+}
