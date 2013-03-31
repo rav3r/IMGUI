@@ -255,7 +255,7 @@ bool igContext::Drag(igIdent id, float x, float y, float width, float height, co
 		if(MouseInside(x, y, width, height))
 		{
 			hotItem = id;
-			if(leftDown && dragItem == nullId)
+			if(leftDown && dragItem == nullId && activeItem == nullId)
 			{
 				activeItem = dragItem = id;
 
@@ -310,7 +310,7 @@ bool igContext::Move(igIdent id, float& x, float& y, float width, float height, 
 		if(MouseInside(x, y, width, height))
 		{
 			hotItem = id;
-			if(leftDown && dragItem == nullId)
+			if(leftDown && dragItem == nullId && activeItem == nullId)
 			{
 				activeItem = dragItem = id;
 

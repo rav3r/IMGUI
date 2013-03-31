@@ -31,6 +31,8 @@ int main()
 	bool checkboxIds[5];
 
 	float moveX = 650, moveY = 500; 
+
+	float objectX = 100, objectY = 400, objectWidth = 100, objectHeight = 100;
 	
 	while (window.isOpen())
 	{
@@ -127,7 +129,62 @@ int main()
 		if(gui.TextBox(GEN_ID(textboxValue2), 600, 70, 100, 20, textboxValue2))
 			;
 
+		float sizerSize = 20.0f;
+		float sizerX, sizerY;
+		float copyX, copyY;
+
+		copyX = sizerX = objectX - sizerSize;
+		copyY = sizerY = objectY;
+		if(gui.Move(GEN_NULL_ID, sizerX, sizerY, sizerSize, objectHeight, 0))
+		{
+			objectX = sizerX + sizerSize;
+			objectWidth -= sizerX - copyX;
+			if(objectWidth < 0)
+			{
+				objectX += objectWidth;
+				objectWidth = 0;
+			}
+		}
+
+		copyX = sizerX = objectX + objectWidth;
+		copyY = sizerY = objectY;
+		if(gui.Move(GEN_NULL_ID, sizerX, sizerY, sizerSize, objectHeight, 0))
+		{
+			objectWidth += sizerX - copyX;
+			if(objectWidth < 0)
+			{
+				objectWidth = 0;
+			}
+		}
+
+		copyX = sizerX = objectX;
+		copyY = sizerY = objectY - sizerSize;
+		if(gui.Move(GEN_NULL_ID, sizerX, sizerY, objectWidth, sizerSize, 0))
+		{
+			objectY = sizerY + sizerSize;
+			objectHeight -= sizerY - copyY;
+			if(objectHeight < 0)
+			{
+				objectY += objectHeight;
+				objectHeight = 0;
+			}
+		}
+
+		copyX = sizerX = objectX;
+		copyY = sizerY = objectY + objectHeight;
+		if(gui.Move(GEN_NULL_ID, sizerX, sizerY, objectWidth, sizerSize, 0))
+		{
+			objectHeight += sizerY - copyY;
+			if(objectHeight < 0)
+			{
+				objectHeight = 0;
+			}
+		}
+
 		gui.End();
+
+		gfxDrawRectangle(objectX, objectY, objectWidth, objectHeight, GFX_STYLE_CHECKBOX);
+
 		window.display();
 	}
 
