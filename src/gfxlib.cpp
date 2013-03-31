@@ -43,7 +43,7 @@ void gfxPrint(float x, float y, const char* str, int style, int pipePos)
 	sf::Text text(str, *gFont, charSize);
 	text.setPosition(sf::Vector2f(x, y));
 	text.setColor(textColor);
-	
+
 	gWindow->draw(text);
 
 	if(pipePos >= 0)

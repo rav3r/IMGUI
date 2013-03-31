@@ -26,6 +26,9 @@ int main()
 	float hSliderValue = 0.0f;
 	std::string textboxValue = "Textbox";
 	std::string textboxValue2 = "Another :)";
+
+	int choice = 0;
+	bool checkboxIds[5];
 	
 	while (window.isOpen())
 	{
@@ -74,10 +77,18 @@ int main()
 		window.clear(sf::Color(128, 128, 128, 255));
 		gui.Begin();
 
+		gui.Drag(GEN_NULL_ID, 500, 500, 40, 20, "drag");
+		gui.Drag(GEN_NULL_ID, 550, 500, 40, 20, "drag");
+		gui.Drag(GEN_NULL_ID, 600, 500, 40, 20, "drag");
+
 		if(gui.Checkbox(GEN_ID(checkboxValue), 300, 100, 10, 10, checkboxValue))
 		{
 			checkboxValue = !checkboxValue;
 		}
+
+		for(int i=0; i<5; i++)
+			if(gui.Checkbox(GEN_ID(checkboxIds[i]), 300 + i*12, 130, 10, 10, choice == i))
+				choice = i;
 
 		if(checkboxValue)
 		{

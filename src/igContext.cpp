@@ -11,6 +11,7 @@ igContext::igContext()
 	hotItem = nullId;
 	activeItem = nullId;
 	keyboardItem = nullId;
+	dragItem = nullId;
 
 	leftDown = false;
 
@@ -41,6 +42,13 @@ void igContext::End()
 
 	charEntered = 0;
 	backspace = false;
+
+	if(dragItem != nullId && dragMoved)
+	{
+		gfxDrawRectangle(dragRect.x, dragRect.y, dragRect.w, dragRect.h, GFX_STYLE_NONE);
+		if(dragTitle.empty() == false)
+			gfxPrint(dragRect.x, dragRect.y, dragTitle.c_str(), GFX_STYLE_NONE);
+	}
 }
 
 bool igContext::Button(igIdent id, float x, float y,
@@ -222,4 +230,62 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 	gfxPrint(x, y, value.c_str(), GFX_STYLE_NONE, keyboardItem == id ? textCharPos : -1); 
 
 	return prevValue != value;
+}
+
+bool igContext::Drag(igIdent id, float x, float y, float width, float height, const char* title)
+{
+	bool result = false;
+
+	if(dragItem == id)
+	{
+		dragRect.x = mouseX - dragX;
+		dragRect.y = mouseY - dragY;
+
+		if(abs(x - dragRect.x) > 1 || abs(y - dragRect.y) > 1)
+			dragMoved = true;
+
+		dragTitle = title;
+		if(leftDown == false)
+		{
+			dragItem = nullId;
+		}
+		result = true;
+	} else
+	{
+		if(MouseInside(x, y, width, height))
+		{
+			hotItem = id;
+			if(leftDown && dragItem == nullId)
+			{
+				activeItem = dragItem = id;
+
+				dragX = mouseX - x;
+				dragY = mouseY - y;
+				
+				dragRect.x = x;
+				dragRect.y = y;
+				dragRect.w = width;
+				dragRect.h = height;
+
+				result = true;
+				dragMoved = false;
+			}
+		}
+	}
+
+	// draw button
+	if(activeItem == id)
+	{
+		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_PRESSED);
+	} else if(hotItem == id)
+	{
+		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_HOVER);
+	} else
+	{
+		gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
+	}
+
+	gfxPrint(x, y, title, GFX_STYLE_NONE); 
+
+	return result;
 }

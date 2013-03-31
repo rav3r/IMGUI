@@ -3,5 +3,6 @@
 
 #include "igContext.h"
 #include "igIdent.h"
+#include "igRect.h"
 
 #endif

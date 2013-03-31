@@ -188,6 +188,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\src\igRect.h"
+			>
+		</File>
+		<File
 			RelativePath=".\src\IMGUI.h"
 			>
 		</File>
