@@ -33,6 +33,9 @@ int main()
 	float moveX = 650, moveY = 500; 
 
 	float objectX = 100, objectY = 400, objectWidth = 100, objectHeight = 100;
+
+	int currTab = 0;
+	bool tabs[5] = {true, false, false, false, false};
 	
 	while (window.isOpen())
 	{
@@ -128,6 +131,16 @@ int main()
 
 		if(gui.TextBox(GEN_ID(textboxValue2), 600, 70, 100, 20, textboxValue2))
 			;
+
+		for(int i=0; i<5; i++)
+		{
+			if(gui.Tab(GEN_ID(tabs[i]), 100+40*i, 50 + ((currTab == i) ? 0:2), 40, 30, "TAB", currTab == i))
+			{
+				currTab = i;
+			}
+		}
+		for(int i=0; i<5; i++)
+			tabs[i] = i==currTab;
 
 		float sizerSize = 20.0f;
 		float sizerX, sizerY;

@@ -45,6 +45,7 @@ struct igContext
 	bool TextBox(igIdent id, float x, float y, float width, float height, std::string& value, const std::string& charset=DEFAULT_CHARSET);
 	bool Drag(igIdent id, float x, float y, float width, float height, const char* title);
 	bool Move(igIdent id, float& x, float& y, float width, float height, const char* title);
+	bool Tab(igIdent id, float x, float y, float width, float height, const char* title, bool value);
 };
 
 #endif

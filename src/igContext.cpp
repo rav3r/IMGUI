@@ -341,3 +341,29 @@ bool igContext::Move(igIdent id, float& x, float& y, float width, float height, 
 	
 	return prevX != x || prevY != y;
 }
+
+bool igContext::Tab(igIdent id, float x, float y, float width, float height, const char* title, bool value)
+{
+	if(MouseInside(x, y, width, height))
+	{
+		hotItem = id;
+		if(leftDown && activeItem == nullId)
+			activeItem = id;
+	}
+
+	// draw tab
+	if(activeItem == id || value)
+	{
+		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_PRESSED);
+	} else if(hotItem == id)
+	{
+		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_HOVER);
+	} else
+	{
+		gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
+	}
+
+	gfxPrint(x+width/2.0f, y+height/2.0f, title, GFX_STYLE_NONE); 
+
+	return (leftDown == false && hotItem == id && activeItem == id) || value;
+}
