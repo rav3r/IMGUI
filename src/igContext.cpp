@@ -47,7 +47,8 @@ void igContext::End()
 	{
 		gfxDrawRectangle(dragRect.x, dragRect.y, dragRect.w, dragRect.h, GFX_STYLE_NONE);
 		if(dragTitle.empty() == false)
-			gfxPrint(dragRect.x, dragRect.y, dragTitle.c_str(), GFX_STYLE_NONE);
+			gfxPrint(dragRect.x + dragRect.w/2.0f, dragRect.y + dragRect.h/2.0f,
+					 dragTitle.c_str(), GFX_STYLE_NONE);
 	}
 }
 
@@ -73,7 +74,7 @@ bool igContext::Button(igIdent id, float x, float y,
 		gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
 	}
 
-	gfxPrint(x, y, title, GFX_STYLE_NONE); 
+	gfxPrint(x+width/2.0f, y+height/2.0f, title, GFX_STYLE_NONE); 
 
 	return leftDown == false && hotItem == id && activeItem == id;
 }
@@ -227,7 +228,7 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 		gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
 	}
 
-	gfxPrint(x, y, value.c_str(), GFX_STYLE_NONE, keyboardItem == id ? textCharPos : -1); 
+	gfxPrint(x + width/2.0f, y + height/2.0f, value.c_str(), GFX_STYLE_NONE, keyboardItem == id ? textCharPos : -1); 
 
 	return prevValue != value;
 }
@@ -285,7 +286,7 @@ bool igContext::Drag(igIdent id, float x, float y, float width, float height, co
 		gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
 	}
 
-	gfxPrint(x, y, title, GFX_STYLE_NONE); 
+	gfxPrint(x + width/2.0f, y + height/2.0f, title, GFX_STYLE_NONE); 
 
 	return result;
 }
@@ -336,7 +337,7 @@ bool igContext::Move(igIdent id, float& x, float& y, float width, float height, 
 		gfxDrawRectangle(prevX, prevY, width, height, GFX_STYLE_NONE);
 	}
 
-	gfxPrint(prevX, prevY, title, GFX_STYLE_NONE);
+	gfxPrint(prevX + width/2.0f, prevY + height/2.0f, title, GFX_STYLE_NONE);
 	
 	return prevX != x || prevY != y;
 }

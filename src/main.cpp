@@ -107,9 +107,9 @@ int main()
 				std::cout << "button 1 clicked\n";
 			if(gui.Button(GEN_NULL_ID, 100, 150, 100, 30, "Click me 2!"))
 				std::cout << "button 2 clicked\n";
-			if(gui.Button(GEN_NULL_ID, 100, 200, 100, 30, "Click me 3!"))
+			if(gui.Button(GEN_NULL_ID, 100, 200, 100, 30, "AVOCADO!"))
 				std::cout << "button 3 clicked\n";
-			if(gui.Button(GEN_NULL_ID, 100, 250, 100, 30, "Click me 4!"))
+			if(gui.Button(GEN_NULL_ID, 100, 250, 100, 30, "IMGUI!"))
 				std::cout << "button 4 clicked\n";
 			if(gui.Button(GEN_NULL_ID, 100, 300, 100, 30, "Click me 5!"))
 				std::cout << "button 5 clicked\n";
