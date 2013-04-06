@@ -3,10 +3,24 @@
 
 #include "igIdent.h"
 #include "igRect.h"
+#include "igRenderer.h"
 
 #include <string>
 
 #define DEFAULT_CHARSET " QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890~!@#$%^&*()_+=-\\|{}[]:;\"'<>,.?/"
+
+namespace igItemStates
+{
+	enum eItemState
+	{
+		NONE			= 0,
+		PRESSED			= 1,
+		HOVER			= 2,
+		TEXT_FOCUS		= 4
+	};
+}
+
+typedef igItemStates::eItemState igItemState;
 
 struct igContext
 {
@@ -31,7 +45,9 @@ struct igContext
 	float dragMouseX, dragMouseY;
 	std::string dragTitle;
 
-	igContext();
+	igRenderer* renderer;
+
+	igContext(igRenderer* rend);
 
     bool MouseInside(float x, float y, float width, float height);
 

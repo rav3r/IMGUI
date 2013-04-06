@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "gfxlib.h"
+#include "gfxRenderer.h"
 
 #include "IMGUI.h"
 
@@ -19,7 +20,8 @@ int main()
 	if(!font.loadFromFile("data/Cabin-Regular.otf"))
         	return EXIT_FAILURE;
 
-	igContext gui;
+	gfxRenderer guiRend;
+	igContext gui(&guiRend);
 
 	bool checkboxValue = true;
 	float vSliderValue = 0.0f;

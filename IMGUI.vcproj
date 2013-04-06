@@ -167,14 +167,26 @@
 	<References>
 	</References>
 	<Files>
-		<File
-			RelativePath=".\src\gfxlib.cpp"
+		<Filter
+			Name="gfxlib"
 			>
-		</File>
-		<File
-			RelativePath=".\src\gfxlib.h"
-			>
-		</File>
+			<File
+				RelativePath=".\src\gfxlib.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gfxlib.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gfxRenderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\gfxRenderer.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\src\igContext.cpp"
 			>
@@ -189,6 +201,10 @@
 		</File>
 		<File
 			RelativePath=".\src\igRect.h"
+			>
+		</File>
+		<File
+			RelativePath=".\src\igRenderer.h"
 			>
 		</File>
 		<File

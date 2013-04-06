@@ -6,7 +6,8 @@
 
 static igIdent nullId = GEN_NULL_ID;
 
-igContext::igContext()
+igContext::igContext(igRenderer* rend):
+	renderer(rend)
 {
 	hotItem = nullId;
 	activeItem = nullId;
@@ -63,18 +64,10 @@ bool igContext::Button(igIdent id, float x, float y,
 	}
 
 	// draw button
-	if(activeItem == id)
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_PRESSED);
-	} else if(hotItem == id)
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_HOVER);
-	} else
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
-	}
-
-	gfxPrint(x+width/2.0f, y+height/2.0f, title, GFX_STYLE_NONE); 
+	int state = igItemStates::NONE;
+	if(activeItem == id) state |= igItemStates::PRESSED;
+	if(hotItem == id) state |= igItemStates::HOVER;
+	renderer->DrawButton(state, 0, x, y, width, height, title);
 
 	return leftDown == false && hotItem == id && activeItem == id;
 }
@@ -89,23 +82,10 @@ bool igContext::Checkbox(igIdent id, float x, float y, float width, float height
 	}
 
 	// draw checkbox
-	const float margin = 2.0f;
-
-	if(activeItem == id)
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_PRESSED);
-	} else if(hotItem == id)
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_HOVER);
-	} else
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
-	}
-	
-	if(value)
-	{
-		gfxDrawRectangle(x+margin, y+margin, width-margin*2, height-margin*2, GFX_STYLE_CHECKBOX);
-	}
+	int state = igItemStates::NONE;
+	if(activeItem == id) state |= igItemStates::PRESSED;
+	if(hotItem == id) state |= igItemStates::HOVER;
+	renderer->DrawCheckbox(state, 0, x, y, width, height, value);
 
 	return leftDown == false && hotItem == id && activeItem == id;
 }
@@ -113,7 +93,6 @@ bool igContext::Checkbox(igIdent id, float x, float y, float width, float height
 bool igContext::VSlider(igIdent id, float x, float y, float width, float height, float aspect, float& value)
 {
 	float prevValue = value;
-	float thumbSize = height * aspect;
 
 	if(MouseInside(x, y, width, height))
 	{
@@ -132,11 +111,7 @@ bool igContext::VSlider(igIdent id, float x, float y, float width, float height,
 		if(value > 1.0f - aspect) value = 1.0f - aspect;
 	}
 
-	// draw vertical slider
-	const float margin = 2.0f;
-
-	gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
-	gfxDrawRectangle(x+margin, y+value*height, width-margin*2, thumbSize, GFX_STYLE_SLIDER_THUMB);
+	renderer->DrawVSlider(0, 0, x, y, width, height, aspect, value);
 
 	return prevValue != value;
 }
@@ -144,7 +119,6 @@ bool igContext::VSlider(igIdent id, float x, float y, float width, float height,
 bool igContext::HSlider(igIdent id, float x, float y, float width, float height, float aspect, float& value)
 {
 	float prevValue = value;
-	float thumbSize = width * aspect;
 
 	if(MouseInside(x, y, width, height))
 	{
@@ -164,10 +138,7 @@ bool igContext::HSlider(igIdent id, float x, float y, float width, float height,
 	}
 
 	// draw vertical slider
-	const float margin = 2.0f;
-
-	gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
-	gfxDrawRectangle(x+value*width, y+margin, thumbSize, height-margin*2.0f, GFX_STYLE_SLIDER_THUMB);
+	renderer->DrawHSlider(0, 0, x, y, width, height, aspect, value);
 
 	return prevValue != value;
 }
@@ -216,19 +187,9 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 		}
 	}
 
-	// draw text box
-	if(keyboardItem == id)
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_PRESSED);
-	} else if(hotItem == id)
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_HOVER);
-	} else
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
-	}
-
-	gfxPrint(x + width/2.0f, y + height/2.0f, value.c_str(), GFX_STYLE_NONE, keyboardItem == id ? textCharPos : -1); 
+	int state = igItemStates::NONE;
+	if(keyboardItem == id) state |= igItemStates::TEXT_FOCUS;
+	renderer->DrawTextBox(state, 0, x, y, width, height, value, textCharPos);
 
 	return prevValue != value;
 }
@@ -274,19 +235,11 @@ bool igContext::Drag(igIdent id, float x, float y, float width, float height, co
 		}
 	}
 
-	// draw button
-	if(activeItem == id)
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_PRESSED);
-	} else if(hotItem == id)
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_HOVER);
-	} else
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
-	}
+	int state = igItemStates::NONE;
+	if(activeItem == id) state |= igItemStates::PRESSED;
+	if(hotItem == id) state |= igItemStates::HOVER;
 
-	gfxPrint(x + width/2.0f, y + height/2.0f, title, GFX_STYLE_NONE); 
+	renderer->DrawDrag(state, 0, x, y, width, height, title);
 
 	return result;
 }
@@ -325,21 +278,12 @@ bool igContext::Move(igIdent id, float& x, float& y, float width, float height, 
 		}
 	}
 
-	// draw button
-	if(activeItem == id)
-	{
-		gfxDrawRectangle(prevX, prevY, width, height, GFX_STYLE_ELEM_PRESSED);
-	} else if(hotItem == id)
-	{
-		gfxDrawRectangle(prevX, prevY, width, height, GFX_STYLE_ELEM_HOVER);
-	} else
-	{
-		gfxDrawRectangle(prevX, prevY, width, height, GFX_STYLE_NONE);
-	}
-
-	gfxPrint(prevX + width/2.0f, prevY + height/2.0f, title, GFX_STYLE_NONE);
+	int state = igItemStates::NONE;
+	if(activeItem == id) state |= igItemStates::PRESSED;
+	if(hotItem == id) state |= igItemStates::HOVER;
+	renderer->DrawMove(state, 0, x, y, prevX, prevY, width, height, title);
 	
-	return prevX != x || prevY != y;
+	return dragItem == id;
 }
 
 bool igContext::Tab(igIdent id, float x, float y, float width, float height, const char* title, bool value)
@@ -351,19 +295,10 @@ bool igContext::Tab(igIdent id, float x, float y, float width, float height, con
 			activeItem = id;
 	}
 
-	// draw tab
-	if(activeItem == id || value)
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_PRESSED);
-	} else if(hotItem == id)
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_HOVER);
-	} else
-	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
-	}
-
-	gfxPrint(x+width/2.0f, y+height/2.0f, title, GFX_STYLE_NONE); 
-
+	int state = igItemStates::NONE;
+	if(activeItem == id) state |= igItemStates::PRESSED;
+	if(hotItem == id) state |= igItemStates::HOVER;
+	renderer->DrawTab(state, 0, x, y, width, height, title, value);
+	
 	return (leftDown == false && hotItem == id && activeItem == id) || value;
 }
