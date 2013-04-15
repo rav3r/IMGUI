@@ -53,14 +53,16 @@ void igContext::End()
 	}
 }
 
-bool igContext::Button(igIdent id, float x, float y,
+igButton igContext::Button(igIdent id, float x, float y,
 	float width, float height, const char* title)
 {
+	igButton button;
     if(MouseInside(x, y, width, height))
     {
 		hotItem = id;
 		if(leftDown && activeItem == nullId)
 			activeItem = id;
+		button.onHover = true;
 	}
 
 	// draw button
@@ -69,7 +71,11 @@ bool igContext::Button(igIdent id, float x, float y,
 	if(hotItem == id) state |= igItemStates::HOVER;
 	renderer->DrawButton(state, 0, x, y, width, height, title);
 
-	return leftDown == false && hotItem == id && activeItem == id;
+
+	button.onClicked = leftDown == false && hotItem == id && activeItem == id;
+	button.onDown = leftDown && activeItem == id;
+
+	return button;
 }
 
 bool igContext::Checkbox(igIdent id, float x, float y, float width, float height, bool value)
@@ -283,7 +289,7 @@ bool igContext::Move(igIdent id, float& x, float& y, float width, float height, 
 	if(hotItem == id) state |= igItemStates::HOVER;
 	renderer->DrawMove(state, 0, x, y, prevX, prevY, width, height, title);
 	
-	return dragItem == id;
+	return prevX != x || prevY != y;
 }
 
 bool igContext::Tab(igIdent id, float x, float y, float width, float height, const char* title, bool value)

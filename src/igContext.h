@@ -1,6 +1,7 @@
 #ifndef __IGCONTEXT_H__
 #define __IGCONTEXT_H__
 
+#include "igEvents.h"
 #include "igIdent.h"
 #include "igRect.h"
 #include "igRenderer.h"
@@ -54,7 +55,7 @@ struct igContext
 	void Begin();
 	void End();
     
-	bool Button(igIdent id, float x, float y, float width, float height, const char* title);
+	igButton Button(igIdent id, float x, float y, float width, float height, const char* title);
 	bool Checkbox(igIdent id, float x, float y, float width, float height, bool value);
 	bool VSlider(igIdent id, float x, float y, float width, float height, float aspect, float& value);
 	bool HSlider(igIdent id, float x, float y, float width, float height, float aspect, float& value);

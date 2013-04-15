@@ -108,16 +108,31 @@ int main()
 
 		if(checkboxValue)
 		{
-			if(gui.Button(GEN_NULL_ID, 100, 100, 100, 30, "Click me 1!"))
-				std::cout << "button 1 clicked\n";
-			if(gui.Button(GEN_NULL_ID, 100, 150, 100, 30, "Click me 2!"))
-				std::cout << "button 2 clicked\n";
-			if(gui.Button(GEN_NULL_ID, 100, 200, 100, 30, "AVOCADO!"))
-				std::cout << "button 3 clicked\n";
-			if(gui.Button(GEN_NULL_ID, 100, 250, 100, 30, "IMGUI!"))
-				std::cout << "button 4 clicked\n";
-			if(gui.Button(GEN_NULL_ID, 100, 300, 100, 30, "Click me 5!"))
-				std::cout << "button 5 clicked\n";
+			if(igButton b = gui.Button(GEN_NULL_ID, 100, 100, 100, 30, "Click me 1!"))
+			{
+				if(b.onClicked)
+					std::cout << "button 1 clicked\n";
+			}
+			if(igButton b = gui.Button(GEN_NULL_ID, 100, 150, 100, 30, "Click me 2!"))
+			{
+				if(b.onClicked)
+					std::cout << "button 2 clicked\n";
+			}
+			if(igButton b = gui.Button(GEN_NULL_ID, 100, 200, 100, 30, "AVOCADO!"))
+			{
+				if(b.onClicked)
+					std::cout << "button 3 clicked\n";
+			}
+			if(igButton b = gui.Button(GEN_NULL_ID, 100, 250, 100, 30, "IMGUI!"))
+			{
+				if(b.onClicked)
+					std::cout << "button 4 clicked\n";
+			}
+			if(igButton b = gui.Button(GEN_NULL_ID, 100, 300, 100, 30, "Click me 5!"))
+			{
+				if(b.onClicked)
+					std::cout << "button 5 clicked\n";
+			}
 		}
 
 		if(gui.VSlider(GEN_ID(vSliderValue), 10, 10, 20, 400, 0.3f, vSliderValue))

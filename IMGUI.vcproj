@@ -196,6 +196,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\src\igEvents.h"
+			>
+		</File>
+		<File
 			RelativePath=".\src\igIdent.h"
 			>
 		</File>
