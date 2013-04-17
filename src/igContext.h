@@ -63,6 +63,23 @@ struct igContext
 	bool Drag(igIdent id, float x, float y, float width, float height, const char* title);
 	bool Move(igIdent id, float& x, float& y, float width, float height, const char* title);
 	bool Tab(igIdent id, float x, float y, float width, float height, const char* title, bool value);
+
+	// scroll area
+	struct
+	{
+		int startX, startY;
+		int currX, currY;
+		int width, height;
+		int offsetY;
+		igIdent id;
+		float* value;
+	} scrollArea;
+
+	void BeginScrollArea(igIdent id, float x, float y, float width, float height, float& value);
+	void EndScrollArea();
+
+	igButton Button(igIdent id, const char* title);
+	bool Checkbox(igIdent id, bool value, const char* title);
 };
 
 #endif

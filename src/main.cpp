@@ -38,6 +38,8 @@ int main()
 
 	int currTab = 0;
 	bool tabs[5] = {true, false, false, false, false};
+
+	float leftSliderValue = 0.0f;
 	
 	while (window.isOpen())
 	{
@@ -84,7 +86,44 @@ int main()
 		}
 
 		window.clear(sf::Color(128, 128, 128, 255));
+
+		sf::Vector2u size = gWindow->getSize();
+
 		gui.Begin();
+
+		gui.BeginScrollArea(GEN_NULL_ID, 10, 10, 120, size.y-20, leftSliderValue);
+
+		gui.Button(GEN_NULL_ID, "Button 1");
+		gui.Button(GEN_NULL_ID, "Button 2");
+		if(gui.Checkbox(GEN_NULL_ID, checkboxValue, "checkbox"))
+			checkboxValue = !checkboxValue;
+		gui.Button(GEN_NULL_ID, "Button 3");
+		gui.Button(GEN_NULL_ID, "Button 4");
+		gui.Button(GEN_NULL_ID, "Button 1");
+		gui.Button(GEN_NULL_ID, "Button 2");
+		gui.Button(GEN_NULL_ID, "Button 3");
+		gui.Button(GEN_NULL_ID, "Button 4");
+		gui.Button(GEN_NULL_ID, "Button 1");
+		gui.Button(GEN_NULL_ID, "Button 2");
+		gui.Button(GEN_NULL_ID, "Button 3");
+		gui.Button(GEN_NULL_ID, "Button 4");
+		gui.Button(GEN_NULL_ID, "Button 1");
+		gui.Button(GEN_NULL_ID, "Button 2");
+		gui.Button(GEN_NULL_ID, "Button 3");
+		gui.Button(GEN_NULL_ID, "Button 4");
+		gui.Button(GEN_NULL_ID, "Button 1");
+		gui.Button(GEN_NULL_ID, "Button 2");
+		gui.Button(GEN_NULL_ID, "Button 3");
+		gui.Button(GEN_NULL_ID, "Button 4");
+		gui.Button(GEN_NULL_ID, "Button -5");
+		gui.Button(GEN_NULL_ID, "Button -4");
+		gui.Button(GEN_NULL_ID, "Button -3");
+		gui.Button(GEN_NULL_ID, "Button -2");
+		gui.Button(GEN_NULL_ID, "Button -1");
+
+		gui.EndScrollArea();
+
+		/*
 
 		gui.Drag(GEN_NULL_ID, 500, 500, 40, 20, "drag");
 		gui.Drag(GEN_NULL_ID, 550, 500, 40, 20, "drag");
@@ -210,10 +249,10 @@ int main()
 				objectHeight = 0;
 			}
 		}
-
+*/
 		gui.End();
 
-		gfxDrawRectangle(objectX, objectY, objectWidth, objectHeight, GFX_STYLE_CHECKBOX);
+		//gfxDrawRectangle(objectX, objectY, objectWidth, objectHeight, GFX_STYLE_CHECKBOX);
 
 		window.display();
 	}

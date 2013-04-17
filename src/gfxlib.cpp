@@ -72,3 +72,25 @@ void gfxPrint(float x, float y, const char* str, int style, int pipePos)
 		gWindow->draw(_Text);
 	} 
 }
+
+#ifdef WIN32
+
+#include <windows.h>
+#include <gl/gl.h>
+
+#else
+
+// todo: linux gl headers
+
+#endif
+
+void gfxScissor(int x, int y, int width, int height)
+{
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(x,gWindow->getSize().y - y - height,width,height);
+}
+
+void gfxDisableScissor()
+{
+	glDisable(GL_SCISSOR_TEST);
+}

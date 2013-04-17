@@ -20,6 +20,8 @@ igContext::igContext(igRenderer* rend):
 	backspace = false;
 
 	textCharPos = 0;
+
+	scrollArea.offsetY = 0;
 }
 
 bool igContext::MouseInside(float x, float y, float width, float height)
@@ -112,7 +114,6 @@ bool igContext::VSlider(igIdent id, float x, float y, float width, float height,
 	if(leftDown && activeItem == id)
 	{
 		value = (mouseY - y)/height - aspect/2.0f;
-
 		if(value < 0) value = 0;
 		if(value > 1.0f - aspect) value = 1.0f - aspect;
 	}
@@ -307,4 +308,64 @@ bool igContext::Tab(igIdent id, float x, float y, float width, float height, con
 	renderer->DrawTab(state, 0, x, y, width, height, title, value);
 	
 	return (leftDown == false && hotItem == id && activeItem == id) || value;
+}
+
+void igContext::BeginScrollArea( igIdent id, float x, float y, float width, float height, float& value )
+{
+	scrollArea.startX = scrollArea.currX = x; scrollArea.startY = y;
+	scrollArea.width = width; scrollArea.height = height;
+	scrollArea.id = id;
+	scrollArea.value = &value;
+
+	scrollArea.currY = y - scrollArea.offsetY;
+
+	gfxDrawRectangle(x, y, width, height, 0);
+
+	gfxScissor(x, y, width, height);
+}
+
+void igContext::EndScrollArea()
+{
+	gfxDisableScissor();
+	float totalSize = (float)(scrollArea.currY - scrollArea.startX + scrollArea.offsetY);
+	float aspect = scrollArea.height/totalSize;
+	float curr = scrollArea.offsetY/totalSize;
+
+	if(aspect < 1.0f)
+	{
+		VSlider(scrollArea.id, scrollArea.startX+scrollArea.width, scrollArea.startY,
+			20,scrollArea.height, aspect, *scrollArea.value);
+		scrollArea.offsetY = *scrollArea.value * totalSize;
+	} else
+	{
+		scrollArea.offsetY = 0;
+	}
+	if(scrollArea.offsetY > totalSize - scrollArea.height)
+		scrollArea.offsetY = totalSize - scrollArea.height;
+}
+
+igButton igContext::Button( igIdent id, const char* title )
+{
+	const int marginX = 5;
+	const int marginY = 5;
+	const int height = 30;
+
+	igButton button = Button(id, scrollArea.currX+marginX, scrollArea.currY, scrollArea.width-2*marginX, height, title);
+
+	scrollArea.currY += height + marginY;
+
+	return button;
+}
+
+bool igContext::Checkbox( igIdent id, bool value, const char* title )
+{
+	const int marginX = 5;
+	const int marginY = 5;
+	const int size = 10;
+	const int height = 20;
+	bool result = Checkbox(id, scrollArea.currX+marginX, scrollArea.currY+height/2-size/2, size, size, value);
+
+	scrollArea.currY += size + height;
+
+	return result;
 }
