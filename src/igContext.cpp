@@ -20,8 +20,6 @@ igContext::igContext(igRenderer* rend):
 	backspace = false;
 
 	textCharPos = 0;
-
-	scrollArea.offsetY = 0;
 }
 
 bool igContext::MouseInside(float x, float y, float width, float height)
@@ -310,38 +308,52 @@ bool igContext::Tab(igIdent id, float x, float y, float width, float height, con
 	return (leftDown == false && hotItem == id && activeItem == id) || value;
 }
 
-void igContext::BeginScrollArea( igIdent id, float x, float y, float width, float height, float& value )
+void igContext::BeginScrollArea( igIdent id, float x, float y, float width, float height, int& offset )
 {
 	scrollArea.startX = scrollArea.currX = x; scrollArea.startY = y;
 	scrollArea.width = width; scrollArea.height = height;
 	scrollArea.id = id;
-	scrollArea.value = &value;
+	scrollArea.offset = &offset;
 
-	scrollArea.currY = y - scrollArea.offsetY;
+	scrollArea.currY = y - *scrollArea.offset;
 
-	gfxDrawRectangle(x, y, width, height, 0);
+	gfxDrawRectangle(x, y, width, height, GFX_STYLE_SCROLL_AREA);
 
 	gfxScissor(x, y, width, height);
+
+	float totalSize = (float)(scrollArea.currY - scrollArea.startY + *scrollArea.offset);
+	float aspect = scrollArea.height/totalSize;
+	float curr = *scrollArea.offset/totalSize;
 }
 
-void igContext::EndScrollArea()
+void igContext::EndScrollArea(bool scrollbarRight)
 {
 	gfxDisableScissor();
-	float totalSize = (float)(scrollArea.currY - scrollArea.startX + scrollArea.offsetY);
+	float totalSize = (float)(scrollArea.currY - scrollArea.startY + *scrollArea.offset);
 	float aspect = scrollArea.height/totalSize;
-	float curr = scrollArea.offsetY/totalSize;
+	float curr = *scrollArea.offset/totalSize;
 
 	if(aspect < 1.0f)
 	{
-		VSlider(scrollArea.id, scrollArea.startX+scrollArea.width, scrollArea.startY,
-			20,scrollArea.height, aspect, *scrollArea.value);
-		scrollArea.offsetY = *scrollArea.value * totalSize;
+		float size = 20;
+		float posX = scrollArea.startX;
+		if(scrollbarRight)
+			posX += scrollArea.width;
+		else
+			posX -= size;
+
+		float value = *scrollArea.offset/totalSize;
+
+		VSlider(scrollArea.id, posX, scrollArea.startY,
+			size, scrollArea.height, aspect, value);
+		*scrollArea.offset = value * totalSize;
 	} else
 	{
-		scrollArea.offsetY = 0;
+		*scrollArea.offset = 0;
 	}
-	if(scrollArea.offsetY > totalSize - scrollArea.height)
-		scrollArea.offsetY = totalSize - scrollArea.height;
+	if(*scrollArea.offset > totalSize - scrollArea.height)
+		*scrollArea.offset = totalSize - scrollArea.height;
+	if(*scrollArea.offset < 0) *scrollArea.offset = 0;
 }
 
 igButton igContext::Button( igIdent id, const char* title )

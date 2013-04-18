@@ -39,6 +39,8 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style)
 	    shape.setFillColor(pressedElemColor);
 	else if(style == GFX_STYLE_ELEM_HOVER)
 	    shape.setFillColor(hoverElemColor);
+	else if(style == GFX_STYLE_SCROLL_AREA)
+		shape.setFillColor(sf::Color::Black);
 	else
 		shape.setFillColor(checkboxColor);
 	    

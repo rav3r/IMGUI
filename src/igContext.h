@@ -70,13 +70,12 @@ struct igContext
 		int startX, startY;
 		int currX, currY;
 		int width, height;
-		int offsetY;
 		igIdent id;
-		float* value;
+		int* offset;
 	} scrollArea;
 
-	void BeginScrollArea(igIdent id, float x, float y, float width, float height, float& value);
-	void EndScrollArea();
+	void BeginScrollArea(igIdent id, float x, float y, float width, float height, int& offset);
+	void EndScrollArea(bool scrollbarRight);
 
 	igButton Button(igIdent id, const char* title);
 	bool Checkbox(igIdent id, bool value, const char* title);

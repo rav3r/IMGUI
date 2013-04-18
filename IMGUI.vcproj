@@ -212,10 +212,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\src\igSizers.h"
-			>
-		</File>
-		<File
 			RelativePath=".\src\IMGUI.h"
 			>
 		</File>

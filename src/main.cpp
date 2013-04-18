@@ -40,11 +40,13 @@ int main()
 	bool tabs[5] = {true, false, false, false, false};
 
 	float leftSliderValue = 0.0f;
+	float rightSliderValue = 0.0f;
 	
 	while (window.isOpen())
 	{
 		sf::Event event;
-		while (window.pollEvent(event))
+		
+		for(int i=0; i<10 && window.pollEvent(event); i++)
 		{
 			if(event.type == sf::Event::Closed)
 				window.close();
@@ -85,16 +87,53 @@ int main()
 			}
 		}
 
-		window.clear(sf::Color(128, 128, 128, 255));
+		window.clear(sf::Color(64, 64, 64, 255));
 
 		sf::Vector2u size = gWindow->getSize();
 
 		gui.Begin();
 
-		gui.BeginScrollArea(GEN_NULL_ID, 10, 10, 120, size.y-20, leftSliderValue);
+		static int leftScrollbarOffset = 0;
+		gui.BeginScrollArea(GEN_NULL_ID, 10, 10, 120, size.y-20, leftScrollbarOffset);
 
 		gui.Button(GEN_NULL_ID, "Button 1");
 		gui.Button(GEN_NULL_ID, "Button 2");
+		if(gui.Checkbox(GEN_NULL_ID, checkboxValue, "checkbox"))
+			checkboxValue = !checkboxValue;
+		if(checkboxValue)
+		{
+			gui.Button(GEN_NULL_ID, "Button 3");
+			gui.Button(GEN_NULL_ID, "Button 4");
+			gui.Button(GEN_NULL_ID, "Button 1");
+			gui.Button(GEN_NULL_ID, "Button 2");
+			gui.Button(GEN_NULL_ID, "Button 3");
+			gui.Button(GEN_NULL_ID, "Button 4");
+			gui.Button(GEN_NULL_ID, "Button 1");
+			gui.Button(GEN_NULL_ID, "Button 2");
+			gui.Button(GEN_NULL_ID, "Button 3");
+			gui.Button(GEN_NULL_ID, "Button 4");
+		}
+		gui.Button(GEN_NULL_ID, "Button 1");
+		gui.Button(GEN_NULL_ID, "Button 2");
+		gui.Button(GEN_NULL_ID, "Button 3");
+		gui.Button(GEN_NULL_ID, "Button 4");
+		gui.Button(GEN_NULL_ID, "Button 1");
+		gui.Button(GEN_NULL_ID, "Button 2");
+		gui.Button(GEN_NULL_ID, "Button 3");
+		gui.Button(GEN_NULL_ID, "Button 4");
+		gui.Button(GEN_NULL_ID, "Button -5");
+		gui.Button(GEN_NULL_ID, "Button -4");
+		gui.Button(GEN_NULL_ID, "Button -3");
+		gui.Button(GEN_NULL_ID, "Button -2");
+		gui.Button(GEN_NULL_ID, "Button -1");
+
+		gui.EndScrollArea(true);
+
+		static int rightScrollbarOffset = 0;
+		gui.BeginScrollArea(GEN_NULL_ID, size.x - 130, 10, 120, size.y-20, rightScrollbarOffset);
+
+		gui.Button(GEN_NULL_ID, "Button A");
+		gui.Button(GEN_NULL_ID, "Button B");
 		if(gui.Checkbox(GEN_NULL_ID, checkboxValue, "checkbox"))
 			checkboxValue = !checkboxValue;
 		gui.Button(GEN_NULL_ID, "Button 3");
@@ -121,7 +160,7 @@ int main()
 		gui.Button(GEN_NULL_ID, "Button -2");
 		gui.Button(GEN_NULL_ID, "Button -1");
 
-		gui.EndScrollArea();
+		gui.EndScrollArea(false);
 
 		/*
 
