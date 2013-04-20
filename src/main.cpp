@@ -33,6 +33,52 @@ class DragOther: public igDraggable
 	// can't be dragged
 };
 
+class DragTreeNode: public igDraggable
+{
+private:
+	std::vector<DragTreeNode*> children;
+	DragTreeNode* parent;
+	std::string name;
+public:
+	DragTreeNode(std::string n, DragTreeNode* p=0): parent(p), name(n) {}
+
+	void RemoveChild(DragTreeNode* child)
+	{
+		for(int i=0; i<children.size(); i++)
+			if(child == children[i])
+				children.erase(children.begin()+i);
+		child->parent = 0;
+	}
+
+	void AddChild(DragTreeNode* child)
+	{
+		if(child->parent == this) return;
+		DragTreeNode* prevParent = this->parent;
+		while(prevParent)
+		{
+			if(prevParent == child)
+				return;
+			prevParent = prevParent->parent;
+		}
+		if(child->parent)
+			child->parent->RemoveChild(child);
+		child->parent = this;
+		children.push_back(child);
+	}
+
+	void DoGUI(igContext &gui)
+	{
+		if(DragTreeNode* child = gui.Drag<DragTreeNode>(GEN_ID(*this), name.c_str(), *this))
+		{
+			AddChild(child);
+		}
+		gui.Indent();
+		for(int i=0; i<children.size(); i++)
+			children[i]->DoGUI(gui);
+		gui.Unindent();
+	}
+};
+
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!");
@@ -67,6 +113,9 @@ int main()
 	float rightSliderValue = 0.0f;
 
 	sf::Clock timer;
+
+	DragTreeNode* root = new DragTreeNode("root");
+	int id=0;
 	
 	while (window.isOpen())
 	{
@@ -168,60 +217,13 @@ int main()
 		static int rightScrollbarOffset = 0;
 		gui.BeginScrollArea(GEN_NULL_ID, size.x - 230, 10, 220, size.y-20, rightScrollbarOffset);
 
-		gui.Button(GEN_NULL_ID, "Button A");
-		gui.Button(GEN_NULL_ID, "Button B");
-		if(gui.Checkbox(GEN_NULL_ID, checkboxValue, "checkbox"))
-			checkboxValue = !checkboxValue;
-		gui.Button(GEN_NULL_ID, "Button 3");
-		gui.Button(GEN_NULL_ID, "Button 4");
-		gui.Button(GEN_NULL_ID, "Button 1");
-		gui.Button(GEN_NULL_ID, "Button 2");
-		gui.Button(GEN_NULL_ID, "Button 3");
-		gui.Button(GEN_NULL_ID, "Button 4");
-		gui.Button(GEN_NULL_ID, "Button 1");
-		gui.Button(GEN_NULL_ID, "Button 2");
-		gui.Button(GEN_NULL_ID, "Button 3");
-		gui.Button(GEN_NULL_ID, "Button 4");
-		gui.Button(GEN_NULL_ID, "Button 1");
-		gui.Button(GEN_NULL_ID, "Button 2");
-		gui.Button(GEN_NULL_ID, "Button 3");
-		gui.Button(GEN_NULL_ID, "Button 4");
-		gui.Button(GEN_NULL_ID, "Button 1");
-		gui.Button(GEN_NULL_ID, "Button 2");
-		gui.Button(GEN_NULL_ID, "Button 3");
-		gui.Button(GEN_NULL_ID, "Button 4");
-		gui.Button(GEN_NULL_ID, "Button -5");
-		gui.Indent();
-		gui.Button(GEN_NULL_ID, "Button -4");
-		gui.Button(GEN_NULL_ID, "Button -3");
-		gui.Button(GEN_NULL_ID, "Button -2");
-		gui.Button(GEN_NULL_ID, "Button -1");
-		
+		root->DoGUI(gui);
 
-		gui.Indent();
-		static DragInt drag1Val(1);
-		if(DragInt* val=gui.Drag<DragInt>(GEN_NULL_ID, IntToStr(drag1Val).c_str(), drag1Val))
+		if(gui.Button(GEN_NULL_ID, "Add node").onClicked)
 		{
-			drag1Val.Add(*val);
+			id++;
+			root->AddChild(new DragTreeNode("Node nr "+IntToStr(id)));
 		}
-		static DragInt drag2Val(2);
-		if(DragInt* val=gui.Drag<DragInt>(GEN_NULL_ID, IntToStr(drag2Val).c_str(), drag2Val))
-		{
-			drag2Val.Add(*val);
-		}
-		static DragInt drag3Val(3);
-		if(DragInt* val=gui.Drag<DragInt>(GEN_NULL_ID, IntToStr(drag3Val).c_str(), drag3Val))
-		{
-			drag3Val.Add(*val);
-		}
-
-		static DragOther otherVal;
-		if(DragOther* val=gui.Drag<DragOther>(GEN_NULL_ID, "Disabled drag", otherVal))
-		{
-			std::cout << "Bug in program :(\n";
-		}
-		gui.Unindent();
-		gui.Unindent();
 
 		gui.EndScrollArea(false);
 
