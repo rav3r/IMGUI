@@ -15,12 +15,14 @@ igContext::igContext(igRenderer* rend):
 	dragItem = nullId;
 
 	mouseWheel = 0;
-	leftDown = false;
+	leftDown = leftLastDown = false;
 
 	charEntered = 0;
 	backspace = false;
 
 	textCharPos = 0;
+
+	dragPointer = 0;
 }
 
 bool igContext::MouseInside(float x, float y, float width, float height)
@@ -30,6 +32,7 @@ bool igContext::MouseInside(float x, float y, float width, float height)
 
 void igContext::Begin()
 {
+	dragMissing = true;
 	hotItem = nullId;
 	if(textCharPos < 0)
 		textCharPos = 0;
@@ -45,6 +48,12 @@ void igContext::End()
 	charEntered = 0;
 	backspace = false;
 
+	if(dragMissing)
+	{
+		dragItem = nullId;
+		dragPointer = 0;
+	}
+
 	if(dragItem != nullId && dragMoved)
 	{
 		gfxDrawRectangle(dragRect.x, dragRect.y, dragRect.w, dragRect.h, GFX_STYLE_NONE);
@@ -54,6 +63,12 @@ void igContext::End()
 	}
 
 	mouseWheel = 0;
+	leftLastDown = leftDown;
+}
+
+bool igContext::LeftJustUp()
+{
+	return leftLastDown && !leftDown;
 }
 
 igButton igContext::Button(igIdent id, float x, float y,
@@ -202,9 +217,13 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 	return prevValue != value;
 }
 
-bool igContext::Drag(igIdent id, float x, float y, float width, float height, const char* title)
+void* igContext::Drag(igIdent id, float x, float y, float width, float height,
+					  const char* title, void* userData, igAcceptDrop fun)
 {
-	bool result = false;
+	void* result = 0;
+
+	if(dragPointer && userData==dragPointer)
+		dragMissing = false;
 
 	if(dragItem == id)
 	{
@@ -219,7 +238,6 @@ bool igContext::Drag(igIdent id, float x, float y, float width, float height, co
 		{
 			dragItem = nullId;
 		}
-		result = true;
 	} else
 	{
 		if(MouseInside(x, y, width, height))
@@ -236,9 +254,16 @@ bool igContext::Drag(igIdent id, float x, float y, float width, float height, co
 				dragRect.y = y;
 				dragRect.w = width;
 				dragRect.h = height;
+				dragPointer = userData;
 
-				result = true;
 				dragMoved = false;
+				dragMissing = false;
+			}
+			if(LeftJustUp() && dragPointer!=0)
+			{
+				result = dragPointer;
+				if(fun(result) == false) result = 0;
+				dragPointer = 0;
 			}
 		}
 	}
@@ -395,3 +420,17 @@ bool igContext::TextBox( igIdent id, std::string& value )
 
 	return result;
 }
+
+void* igContext::Drag( igIdent id, const char* title, void* userData, igAcceptDrop fun )
+{
+	const int marginX = 5;
+	const int marginY = 5;
+	const int height = 30;
+
+	void* result = Drag(id, scrollArea.currX+marginX, scrollArea.currY, scrollArea.width-2*marginX, height, title, userData, fun);
+
+	scrollArea.currY += height + marginY;
+
+	return result;
+}
+

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <SFML/Graphics.hpp>
 
 #include "gfxlib.h"
@@ -8,6 +9,13 @@
 
 sf::RenderWindow* gWindow = 0;
 sf::Font* gFont = 0;
+
+std::string IntToStr(int k)
+{
+	std::ostringstream o;
+	o << k;
+	return o.str();
+}
 
 int main()
 {
@@ -171,6 +179,22 @@ int main()
 		gui.Button(GEN_NULL_ID, "Button -3");
 		gui.Button(GEN_NULL_ID, "Button -2");
 		gui.Button(GEN_NULL_ID, "Button -1");
+
+		static int drag1Val = 1;
+		if(int* newName = gui.Drag<int, int>(GEN_NULL_ID, IntToStr(drag1Val).c_str(), drag1Val))
+		{
+			drag1Val += *newName;
+		}
+		static int drag2Val = 2;
+		if(int* newName = (int*)gui.Drag(GEN_NULL_ID, IntToStr(drag2Val).c_str(), &drag2Val))
+		{
+			drag2Val += *newName;
+		}
+		static int drag3Val = 3;
+		if(int* newName = (int*)gui.Drag(GEN_NULL_ID, IntToStr(drag3Val).c_str(), &drag3Val))
+		{
+			drag3Val += *newName;
+		}
 
 		gui.EndScrollArea(false);
 

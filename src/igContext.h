@@ -23,6 +23,18 @@ namespace igItemStates
 
 typedef igItemStates::eItemState igItemState;
 
+typedef bool (*igAcceptDrop)(void* ptr);
+
+static bool igAlwaysAcceptDrop(void* ptr)
+{
+	return true;
+}
+
+static bool igNeverAcceptDrop(void* ptr)
+{
+	return false;
+}
+
 struct igContext
 {
 	float mouseX;
@@ -30,6 +42,9 @@ struct igContext
 
 	int mouseWheel;
 	int leftDown;
+	int leftLastDown;
+
+	bool LeftJustUp();
 
 	bool backspace;
 	wchar_t charEntered;
@@ -46,6 +61,8 @@ struct igContext
 	float dragX, dragY;
 	float dragMouseX, dragMouseY;
 	std::string dragTitle;
+	void* dragPointer;
+	bool dragMissing;
 
 	igRenderer* renderer;
 
@@ -61,7 +78,7 @@ struct igContext
 	bool VSlider(igIdent id, float x, float y, float width, float height, float aspect, float& value);
 	bool HSlider(igIdent id, float x, float y, float width, float height, float aspect, float& value);
 	bool TextBox(igIdent id, float x, float y, float width, float height, std::string& value, const std::string& charset=DEFAULT_CHARSET);
-	bool Drag(igIdent id, float x, float y, float width, float height, const char* title);
+	void* Drag(igIdent id, float x, float y, float width, float height, const char* title, void* userData, igAcceptDrop fun=igNeverAcceptDrop);
 	bool Move(igIdent id, float& x, float& y, float width, float height, const char* title);
 	bool Tab(igIdent id, float x, float y, float width, float height, const char* title, bool value);
 
@@ -81,6 +98,13 @@ struct igContext
 	igButton Button(igIdent id, const char* title);
 	bool Checkbox(igIdent id, bool value, const char* title);
 	bool TextBox(igIdent id, std::string& value);
+	void* Drag(igIdent id, const char* title, void* userData, igAcceptDrop fun=igAlwaysAcceptDrop);
+
+	template <class R, class S>
+	R* Drag(igIdent id, const char* title, S& userData, igAcceptDrop fun=igAlwaysAcceptDrop)
+	{
+		return (R*)Drag(id, title, &userData, fun);
+	}
 };
 
 #endif
