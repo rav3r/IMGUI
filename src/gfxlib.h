@@ -9,6 +9,8 @@
 #define GFX_STYLE_SLIDER_BG 5
 #define GFX_STYLE_SCROLL_AREA 6
 #define GFX_STYLE_TEXTBOX_BG 7
+#define GFX_STYLE_CAN_DRAG 8
+#define GFX_STYLE_CAN_NOT_DRAG 9
 
 // External functions used by lib
 

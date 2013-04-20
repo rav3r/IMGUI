@@ -35,6 +35,12 @@ static bool igNeverAcceptDrop(void* ptr)
 	return false;
 }
 
+class igDraggable
+{
+public:
+	virtual ~igDraggable() {}
+};
+
 struct igContext
 {
 	float mouseX;
@@ -61,8 +67,9 @@ struct igContext
 	float dragX, dragY;
 	float dragMouseX, dragMouseY;
 	std::string dragTitle;
-	void* dragPointer;
+	igDraggable* dragPointer;
 	bool dragMissing;
+	bool canDrop;
 
 	igRenderer* renderer;
 
@@ -78,7 +85,7 @@ struct igContext
 	bool VSlider(igIdent id, float x, float y, float width, float height, float aspect, float& value);
 	bool HSlider(igIdent id, float x, float y, float width, float height, float aspect, float& value);
 	bool TextBox(igIdent id, float x, float y, float width, float height, std::string& value, const std::string& charset=DEFAULT_CHARSET);
-	void* Drag(igIdent id, float x, float y, float width, float height, const char* title, void* userData, igAcceptDrop fun=igNeverAcceptDrop);
+	igDraggable* Drag(igIdent id, float x, float y, float width, float height, const char* title, igDraggable* userData, igAcceptDrop fun=igNeverAcceptDrop);
 	bool Move(igIdent id, float& x, float& y, float width, float height, const char* title);
 	bool Tab(igIdent id, float x, float y, float width, float height, const char* title, bool value);
 
@@ -98,12 +105,27 @@ struct igContext
 	igButton Button(igIdent id, const char* title);
 	bool Checkbox(igIdent id, bool value, const char* title);
 	bool TextBox(igIdent id, std::string& value);
-	void* Drag(igIdent id, const char* title, void* userData, igAcceptDrop fun=igAlwaysAcceptDrop);
+	igDraggable* Drag(igIdent id, const char* title, igDraggable* userData, igAcceptDrop fun=igAlwaysAcceptDrop);
 
-	template <class R, class S>
-	R* Drag(igIdent id, const char* title, S& userData, igAcceptDrop fun=igAlwaysAcceptDrop)
+	template <class R>
+	R* Drag(igIdent id, const char* title, igDraggable& userData, igAcceptDrop fun=igAlwaysAcceptDrop)
 	{
-		return (R*)Drag(id, title, &userData, fun);
+		const int marginX = 5;
+		const int marginY = 5;
+		const int height = 30;
+		
+		float x = scrollArea.currX+marginX;
+		float y = scrollArea.currY;
+		float width = scrollArea.width-2*marginX;
+
+		if(MouseInside(x, y, width, height) && dynamic_cast<R*>(dragPointer)!=0)
+			canDrop = true;
+
+		igDraggable* result = Drag(id, x, y, width, height, title, &userData, fun);
+
+		scrollArea.currY += height + marginY;
+
+		return dynamic_cast<R*>(result);
 	}
 };
 

@@ -17,6 +17,22 @@ std::string IntToStr(int k)
 	return o.str();
 }
 
+class DragInt: public igDraggable
+{
+private:
+	int value;
+public:
+	DragInt(int k) { value = k; }
+	DragInt(const DragInt& o) { value = o.value; }
+	void Add(int i) { value += i; }
+	operator int() { return value; }
+};
+
+class DragOther: public igDraggable 
+{
+	// can't be dragged
+};
+
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!");
@@ -180,20 +196,26 @@ int main()
 		gui.Button(GEN_NULL_ID, "Button -2");
 		gui.Button(GEN_NULL_ID, "Button -1");
 
-		static int drag1Val = 1;
-		if(int* newName = gui.Drag<int, int>(GEN_NULL_ID, IntToStr(drag1Val).c_str(), drag1Val))
+		static DragInt drag1Val(1);
+		if(DragInt* val=gui.Drag<DragInt>(GEN_NULL_ID, IntToStr(drag1Val).c_str(), drag1Val))
 		{
-			drag1Val += *newName;
+			drag1Val.Add(*val);
 		}
-		static int drag2Val = 2;
-		if(int* newName = (int*)gui.Drag(GEN_NULL_ID, IntToStr(drag2Val).c_str(), &drag2Val))
+		static DragInt drag2Val(2);
+		if(DragInt* val=gui.Drag<DragInt>(GEN_NULL_ID, IntToStr(drag2Val).c_str(), drag2Val))
 		{
-			drag2Val += *newName;
+			drag2Val.Add(*val);
 		}
-		static int drag3Val = 3;
-		if(int* newName = (int*)gui.Drag(GEN_NULL_ID, IntToStr(drag3Val).c_str(), &drag3Val))
+		static DragInt drag3Val(3);
+		if(DragInt* val=gui.Drag<DragInt>(GEN_NULL_ID, IntToStr(drag3Val).c_str(), drag3Val))
 		{
-			drag3Val += *newName;
+			drag3Val.Add(*val);
+		}
+
+		static DragOther otherVal;
+		if(DragOther* val=gui.Drag<DragOther>(GEN_NULL_ID, "Disabled drag", otherVal))
+		{
+			std::cout << "Bug in program :(\n";
 		}
 
 		gui.EndScrollArea(false);

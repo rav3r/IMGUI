@@ -47,6 +47,10 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style)
 		shape.setFillColor(sf::Color(50, 50, 50));
 	else if(style == GFX_STYLE_TEXTBOX_BG)
 		shape.setFillColor(sf::Color(110, 110, 110));
+	else if(style == GFX_STYLE_CAN_DRAG)
+		shape.setFillColor(sf::Color(50, 100, 50));
+	else if(style == GFX_STYLE_CAN_NOT_DRAG)
+		shape.setFillColor(sf::Color(100, 50, 50));
 	else
 		shape.setFillColor(checkboxColor);
 	    

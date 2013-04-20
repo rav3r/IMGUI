@@ -32,6 +32,7 @@ bool igContext::MouseInside(float x, float y, float width, float height)
 
 void igContext::Begin()
 {
+	canDrop = false;
 	dragMissing = true;
 	hotItem = nullId;
 	if(textCharPos < 0)
@@ -56,7 +57,7 @@ void igContext::End()
 
 	if(dragItem != nullId && dragMoved)
 	{
-		gfxDrawRectangle(dragRect.x, dragRect.y, dragRect.w, dragRect.h, GFX_STYLE_NONE);
+		gfxDrawRectangle(dragRect.x, dragRect.y, dragRect.w, dragRect.h, canDrop ? GFX_STYLE_CAN_DRAG : GFX_STYLE_CAN_NOT_DRAG);
 		if(dragTitle.empty() == false)
 			gfxPrint(dragRect.x + dragRect.w/2.0f, dragRect.y + dragRect.h/2.0f,
 					 dragTitle.c_str(), GFX_STYLE_NONE);
@@ -217,10 +218,10 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 	return prevValue != value;
 }
 
-void* igContext::Drag(igIdent id, float x, float y, float width, float height,
-					  const char* title, void* userData, igAcceptDrop fun)
+igDraggable* igContext::Drag(igIdent id, float x, float y, float width, float height,
+					  const char* title, igDraggable* userData, igAcceptDrop fun)
 {
-	void* result = 0;
+	igDraggable* result = 0;
 
 	if(dragPointer && userData==dragPointer)
 		dragMissing = false;
@@ -421,16 +422,15 @@ bool igContext::TextBox( igIdent id, std::string& value )
 	return result;
 }
 
-void* igContext::Drag( igIdent id, const char* title, void* userData, igAcceptDrop fun )
+igDraggable* igContext::Drag( igIdent id, const char* title, igDraggable* userData, igAcceptDrop fun )
 {
 	const int marginX = 5;
 	const int marginY = 5;
 	const int height = 30;
 
-	void* result = Drag(id, scrollArea.currX+marginX, scrollArea.currY, scrollArea.width-2*marginX, height, title, userData, fun);
+	igDraggable* result = Drag(id, scrollArea.currX+marginX, scrollArea.currY, scrollArea.width-2*marginX, height, title, userData, fun);
 
 	scrollArea.currY += height + marginY;
 
 	return result;
 }
-
