@@ -87,7 +87,7 @@ int main()
 			}
 		}
 
-		window.clear(sf::Color(64, 64, 64, 255));
+		window.clear(sf::Color(0, 0, 0, 255));
 
 		sf::Vector2u size = gWindow->getSize();
 

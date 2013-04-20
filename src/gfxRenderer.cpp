@@ -21,7 +21,7 @@ void gfxRenderer::DrawButton( int state, int style, float x, float y, float widt
 
 void gfxRenderer::DrawCheckbox( int state, int style, float x, float y, float width, float height, bool value )
 {
-	const float margin = 2.0f;
+	const float margin = 3.0f;
 
 	if(state & igItemStates::PRESSED)
 	{
@@ -43,19 +43,19 @@ void gfxRenderer::DrawCheckbox( int state, int style, float x, float y, float wi
 void gfxRenderer::DrawVSlider( int state, int style, float x, float y, float width, float height, float aspect, const float& value )
 {
 	// draw vertical slider
-	const float margin = 2.0f;
+	const float margin = 0.0f;
 	float thumbSize = height * aspect;
 
-	gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
+	gfxDrawRectangle(x, y, width, height, GFX_STYLE_SLIDER_BG);
 	gfxDrawRectangle(x+margin, y+value*height, width-margin*2, thumbSize, GFX_STYLE_SLIDER_THUMB);
 }
 
 void gfxRenderer::DrawHSlider( int state, int style, float x, float y, float width, float height, float aspect, const float& value )
 {
-	const float margin = 2.0f;
+	const float margin = 0.0f;
 	float thumbSize = width * aspect;
 
-	gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
+	gfxDrawRectangle(x, y, width, height, GFX_STYLE_SLIDER_BG);
 	gfxDrawRectangle(x+value*width, y+margin, thumbSize, height-margin*2.0f, GFX_STYLE_SLIDER_THUMB);
 }
 
@@ -125,4 +125,9 @@ void gfxRenderer::DrawTab( int state, int style, float x, float y, float width, 
 
 	gfxPrint(x+width/2.0f, y+height/2.0f, title, GFX_STYLE_NONE); 
 
+}
+
+void gfxRenderer::DrawScrollArea(int style, float x, float y, float width, float height)
+{
+	gfxDrawRectangle(x, y, width, height, style);
 }

@@ -21,7 +21,7 @@ normal
 */
 
 static sf::Color textColor(255, 255, 255, 255);
-static sf::Color elementColor(42,68,128,255);
+static sf::Color elementColor(85, 87, 82, 255);
 static sf::Color pressedElemColor(108,140,213,255);
 static sf::Color hoverElemColor(70,113,213,255);
 static sf::Color checkboxColor(255, 255, 255, 255);
@@ -30,8 +30,8 @@ static sf::Color borderColor(6,38,111,255);
 void gfxDrawRectangle(float x, float y, float width, float height, int style)
 {
 	sf::RectangleShape shape(sf::Vector2f(width-2, height-2));
-	shape.setOutlineThickness(1);
-	shape.setOutlineColor(borderColor);
+	//shape.setOutlineThickness(1);
+	//shape.setOutlineColor(borderColor);
 	shape.setPosition(sf::Vector2f(x+1, y+1));
 	if(style == GFX_STYLE_NONE)
 	    shape.setFillColor(elementColor);
@@ -40,11 +40,38 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style)
 	else if(style == GFX_STYLE_ELEM_HOVER)
 	    shape.setFillColor(hoverElemColor);
 	else if(style == GFX_STYLE_SCROLL_AREA)
-		shape.setFillColor(sf::Color::Black);
+		shape.setFillColor(sf::Color(70,70,70));
+	else if(style == GFX_STYLE_SLIDER_THUMB)
+		shape.setFillColor(sf::Color(104, 106, 101));
+	else if(style == GFX_STYLE_SLIDER_BG)
+		shape.setFillColor(sf::Color(50, 50, 50));
 	else
 		shape.setFillColor(checkboxColor);
 	    
 	gWindow->draw(shape);
+
+	sf::Color lighterBorderColor(117, 119, 114);
+	sf::Color darkerBorderColor(53, 55, 50);
+	
+	sf::RectangleShape upBorder(sf::Vector2f(width, 1));
+	upBorder.setPosition(sf::Vector2f(x, y));
+	upBorder.setFillColor(lighterBorderColor);
+	gWindow->draw(upBorder);
+
+	sf::RectangleShape leftBorder(sf::Vector2f(1, height));
+	leftBorder.setPosition(sf::Vector2f(x, y));
+	leftBorder.setFillColor(lighterBorderColor);
+	gWindow->draw(leftBorder);
+
+	sf::RectangleShape downBorder(sf::Vector2f(width, 1));
+	downBorder.setPosition(sf::Vector2f(x, y+height-1));
+	downBorder.setFillColor(darkerBorderColor);
+	gWindow->draw(downBorder);
+
+	sf::RectangleShape rightBorder(sf::Vector2f(1, height));
+	rightBorder.setPosition(sf::Vector2f(x+width-1, y));
+	rightBorder.setFillColor(darkerBorderColor);
+	gWindow->draw(rightBorder);
 }
 
 void gfxPrint(float x, float y, const char* str, int style, int pipePos)

@@ -29,6 +29,8 @@ public:
 
 	void DrawTab(int state, int style, float x, float y,
 					float width, float height, const char* title, bool value);
+
+	void DrawScrollArea(int style, float x, float y, float width, float height);
 };
 
 #endif

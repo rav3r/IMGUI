@@ -6,7 +6,8 @@
 #define GFX_STYLE_ELEM_HOVER 2
 #define GFX_STYLE_CHECKBOX 3
 #define GFX_STYLE_SLIDER_THUMB 4
-#define GFX_STYLE_SCROLL_AREA 5
+#define GFX_STYLE_SLIDER_BG 5
+#define GFX_STYLE_SCROLL_AREA 6
 
 // External functions used by lib
 

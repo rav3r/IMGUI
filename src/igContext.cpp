@@ -317,7 +317,7 @@ void igContext::BeginScrollArea( igIdent id, float x, float y, float width, floa
 
 	scrollArea.currY = y - *scrollArea.offset;
 
-	gfxDrawRectangle(x, y, width, height, GFX_STYLE_SCROLL_AREA);
+	renderer->DrawScrollArea(GFX_STYLE_SCROLL_AREA, x, y, width, height);
 
 	gfxScissor(x, y, width, height);
 
@@ -373,11 +373,11 @@ bool igContext::Checkbox( igIdent id, bool value, const char* title )
 {
 	const int marginX = 5;
 	const int marginY = 5;
-	const int size = 10;
-	const int height = 20;
+	const int size = 16;
+	const int height = 30;
 	bool result = Checkbox(id, scrollArea.currX+marginX, scrollArea.currY+height/2-size/2, size, size, value);
 
-	scrollArea.currY += size + height;
+	scrollArea.currY += height;
 
 	return result;
 }
