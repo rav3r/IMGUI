@@ -118,7 +118,8 @@ struct igContext
 		float y = scrollArea.currY;
 		float width = scrollArea.width-2*marginX;
 
-		if(MouseInside(x, y, width, height) && dynamic_cast<R*>(dragPointer)!=0)
+		if(MouseInside(x, y, width, height) && dragPointer!=&userData &&
+			dynamic_cast<R*>(dragPointer)!=0)
 			canDrop = true;
 
 		igDraggable* result = Drag(id, x, y, width, height, title, &userData, fun);
