@@ -70,10 +70,14 @@ void gfxRenderer::DrawTextBox( int state, int style, float x, float y, float wid
 		gfxDrawRectangle(x, y, width, height, GFX_STYLE_ELEM_HOVER);
 	} else
 	{
-		gfxDrawRectangle(x, y, width, height, GFX_STYLE_NONE);
+		gfxDrawRectangle(x, y, width, height, GFX_STYLE_TEXTBOX_BG);
 	}
 
-	gfxPrint(x + width/2.0f, y + height/2.0f, value.c_str(), GFX_STYLE_NONE, state & igItemStates::TEXT_FOCUS ? textCharPos : -1); 
+	int pipePos = state & igItemStates::TEXT_FOCUS ? textCharPos : -1;
+	if(time % 500 >= 250)
+		pipePos = -1;
+
+	gfxPrint(x + width/2.0f, y + height/2.0f, value.c_str(), GFX_STYLE_NONE, pipePos); 
 }
 
 void gfxRenderer::DrawDrag( int state, int style, float x, float y, float width, float height, const char* title )

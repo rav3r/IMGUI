@@ -79,6 +79,7 @@ struct igContext
 
 	igButton Button(igIdent id, const char* title);
 	bool Checkbox(igIdent id, bool value, const char* title);
+	bool TextBox(igIdent id, std::string& value);
 };
 
 #endif

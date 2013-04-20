@@ -45,6 +45,8 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style)
 		shape.setFillColor(sf::Color(104, 106, 101));
 	else if(style == GFX_STYLE_SLIDER_BG)
 		shape.setFillColor(sf::Color(50, 50, 50));
+	else if(style == GFX_STYLE_TEXTBOX_BG)
+		shape.setFillColor(sf::Color(110, 110, 110));
 	else
 		shape.setFillColor(checkboxColor);
 	    
@@ -92,10 +94,10 @@ void gfxPrint(float x, float y, const char* str, int style, int pipePos)
 		std::string curr = str;
 		curr = curr.substr(0, pipePos);
 		sf::Text currText(curr+".", *gFont, charSize);
-		sf::Text _Text("_", *gFont, charSize);
+		sf::Text _Text("|", *gFont, charSize);
 		sf::Text dotText(".", *gFont, charSize);
 
-		_Text.setColor(sf::Color::Red);
+		_Text.setColor(hoverElemColor);
 		float xDiff = currText.getLocalBounds().width - dotText.getLocalBounds().width;
 		_Text.setPosition(sf::Vector2f(pos.x + xDiff, pos.y));
 		gWindow->draw(_Text);

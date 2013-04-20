@@ -381,3 +381,16 @@ bool igContext::Checkbox( igIdent id, bool value, const char* title )
 
 	return result;
 }
+
+bool igContext::TextBox( igIdent id, std::string& value )
+{
+	const int marginX = 5;
+	const int marginY = 5;
+	const int height = 30;
+
+	bool result = TextBox(id, scrollArea.currX+marginX, scrollArea.currY, scrollArea.width-2*marginX, height, value);
+
+	scrollArea.currY += height + marginY;
+
+	return result;
+}

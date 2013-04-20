@@ -6,6 +6,8 @@
 class gfxRenderer: public igRenderer
 {
 public:
+	int time;
+
 	void DrawButton(int state, int style, float x, float y,
 					float width, float height, const char* title);
 

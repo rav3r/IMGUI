@@ -41,6 +41,8 @@ int main()
 
 	float leftSliderValue = 0.0f;
 	float rightSliderValue = 0.0f;
+
+	sf::Clock timer;
 	
 	while (window.isOpen())
 	{
@@ -90,6 +92,8 @@ int main()
 		window.clear(sf::Color(0, 0, 0, 255));
 
 		sf::Vector2u size = gWindow->getSize();
+		
+		guiRend.time = timer.getElapsedTime().asMilliseconds();
 
 		gui.Begin();
 
@@ -113,6 +117,10 @@ int main()
 			gui.Button(GEN_NULL_ID, "Button 3");
 			gui.Button(GEN_NULL_ID, "Button 4");
 		}
+		static std::string text1 = "Edit me!";
+		gui.TextBox(GEN_NULL_ID, text1);
+		static std::string text2 = "Or me!";
+		gui.TextBox(GEN_NULL_ID, text2);
 		gui.Button(GEN_NULL_ID, "Button 1");
 		gui.Button(GEN_NULL_ID, "Button 2");
 		gui.Button(GEN_NULL_ID, "Button 3");

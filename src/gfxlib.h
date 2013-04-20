@@ -8,6 +8,7 @@
 #define GFX_STYLE_SLIDER_THUMB 4
 #define GFX_STYLE_SLIDER_BG 5
 #define GFX_STYLE_SCROLL_AREA 6
+#define GFX_STYLE_TEXTBOX_BG 7
 
 // External functions used by lib
 
