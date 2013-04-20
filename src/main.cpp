@@ -52,6 +52,10 @@ int main()
 		{
 			if(event.type == sf::Event::Closed)
 				window.close();
+			if(event.type == sf::Event::MouseWheelMoved)
+			{
+				gui.mouseWheel += event.mouseWheel.delta;
+			}
 			if(event.type == sf::Event::Resized)
 			{
 				view.reset(sf::FloatRect(0, 0, event.size.width, event.size.height));

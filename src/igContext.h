@@ -28,6 +28,7 @@ struct igContext
 	float mouseX;
 	float mouseY;
 
+	int mouseWheel;
 	int leftDown;
 
 	bool backspace;

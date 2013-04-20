@@ -14,6 +14,7 @@ igContext::igContext(igRenderer* rend):
 	keyboardItem = nullId;
 	dragItem = nullId;
 
+	mouseWheel = 0;
 	leftDown = false;
 
 	charEntered = 0;
@@ -51,6 +52,8 @@ void igContext::End()
 			gfxPrint(dragRect.x + dragRect.w/2.0f, dragRect.y + dragRect.h/2.0f,
 					 dragTitle.c_str(), GFX_STYLE_NONE);
 	}
+
+	mouseWheel = 0;
 }
 
 igButton igContext::Button(igIdent id, float x, float y,
@@ -320,10 +323,6 @@ void igContext::BeginScrollArea( igIdent id, float x, float y, float width, floa
 	renderer->DrawScrollArea(GFX_STYLE_SCROLL_AREA, x, y, width, height);
 
 	gfxScissor(x, y, width, height);
-
-	float totalSize = (float)(scrollArea.currY - scrollArea.startY + *scrollArea.offset);
-	float aspect = scrollArea.height/totalSize;
-	float curr = *scrollArea.offset/totalSize;
 }
 
 void igContext::EndScrollArea(bool scrollbarRight)
@@ -342,11 +341,13 @@ void igContext::EndScrollArea(bool scrollbarRight)
 		else
 			posX -= size;
 
-		float value = *scrollArea.offset/totalSize;
+		float value = (*scrollArea.offset + 0.5f)/totalSize;
 
 		VSlider(scrollArea.id, posX, scrollArea.startY,
 			size, scrollArea.height, aspect, value);
 		*scrollArea.offset = value * totalSize;
+		if(MouseInside(scrollArea.startX, scrollArea.startY, scrollArea.width, scrollArea.height))
+			*scrollArea.offset -= mouseWheel*30;
 	} else
 	{
 		*scrollArea.offset = 0;

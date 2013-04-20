@@ -97,7 +97,7 @@ void gfxPrint(float x, float y, const char* str, int style, int pipePos)
 		sf::Text _Text("|", *gFont, charSize);
 		sf::Text dotText(".", *gFont, charSize);
 
-		_Text.setColor(hoverElemColor);
+		_Text.setColor(sf::Color(0, 0, 255));
 		float xDiff = currText.getLocalBounds().width - dotText.getLocalBounds().width;
 		_Text.setPosition(sf::Vector2f(pos.x + xDiff, pos.y));
 		gWindow->draw(_Text);
