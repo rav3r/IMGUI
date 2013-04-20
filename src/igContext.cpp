@@ -388,8 +388,12 @@ igButton igContext::Button( igIdent id, const char* title )
 	const int marginX = 5;
 	const int marginY = 5;
 	const int height = 30;
+	
+	const int x = scrollArea.currX+marginX;
+	const int y = scrollArea.currY;
+	const int width = scrollArea.width-2*marginX-(scrollArea.currX-scrollArea.startX);
 
-	igButton button = Button(id, scrollArea.currX+marginX, scrollArea.currY, scrollArea.width-2*marginX, height, title);
+	igButton button = Button(id, x, y, width, height, title);
 
 	scrollArea.currY += height + marginY;
 
@@ -402,7 +406,10 @@ bool igContext::Checkbox( igIdent id, bool value, const char* title )
 	const int marginY = 5;
 	const int size = 16;
 	const int height = 30;
-	bool result = Checkbox(id, scrollArea.currX+marginX, scrollArea.currY+height/2-size/2, size, size, value);
+	const int x = scrollArea.currX+marginX;
+	const int y = scrollArea.currY+height/2-size/2;
+
+	bool result = Checkbox(id, x, y, size, size, value);
 
 	scrollArea.currY += height;
 
@@ -414,8 +421,11 @@ bool igContext::TextBox( igIdent id, std::string& value )
 	const int marginX = 5;
 	const int marginY = 5;
 	const int height = 30;
+	const int x = scrollArea.currX+marginX;
+	const int y = scrollArea.currY;
+	const int width = scrollArea.width-2*marginX-(scrollArea.currX-scrollArea.startX);
 
-	bool result = TextBox(id, scrollArea.currX+marginX, scrollArea.currY, scrollArea.width-2*marginX, height, value);
+	bool result = TextBox(id, x, y, width, height, value);
 
 	scrollArea.currY += height + marginY;
 
@@ -427,10 +437,25 @@ igDraggable* igContext::Drag( igIdent id, const char* title, igDraggable* userDa
 	const int marginX = 5;
 	const int marginY = 5;
 	const int height = 30;
+	const int x = scrollArea.currX+marginX;
+	const int y = scrollArea.currY;
+	const int width = scrollArea.width-2*marginX-(scrollArea.currX-scrollArea.startX);
 
-	igDraggable* result = Drag(id, scrollArea.currX+marginX, scrollArea.currY, scrollArea.width-2*marginX, height, title, userData, fun);
+	igDraggable* result = Drag(id, x, y, width, height, title, userData, fun);
 
 	scrollArea.currY += height + marginY;
 
 	return result;
+}
+
+const int indentSize = 20;
+
+void igContext::Indent()
+{
+	scrollArea.currX += indentSize;
+}
+
+void igContext::Unindent()
+{
+	scrollArea.currX -= indentSize;
 }

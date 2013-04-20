@@ -166,7 +166,7 @@ int main()
 		gui.EndScrollArea(true);
 
 		static int rightScrollbarOffset = 0;
-		gui.BeginScrollArea(GEN_NULL_ID, size.x - 130, 10, 120, size.y-20, rightScrollbarOffset);
+		gui.BeginScrollArea(GEN_NULL_ID, size.x - 230, 10, 220, size.y-20, rightScrollbarOffset);
 
 		gui.Button(GEN_NULL_ID, "Button A");
 		gui.Button(GEN_NULL_ID, "Button B");
@@ -191,11 +191,14 @@ int main()
 		gui.Button(GEN_NULL_ID, "Button 3");
 		gui.Button(GEN_NULL_ID, "Button 4");
 		gui.Button(GEN_NULL_ID, "Button -5");
+		gui.Indent();
 		gui.Button(GEN_NULL_ID, "Button -4");
 		gui.Button(GEN_NULL_ID, "Button -3");
 		gui.Button(GEN_NULL_ID, "Button -2");
 		gui.Button(GEN_NULL_ID, "Button -1");
+		
 
+		gui.Indent();
 		static DragInt drag1Val(1);
 		if(DragInt* val=gui.Drag<DragInt>(GEN_NULL_ID, IntToStr(drag1Val).c_str(), drag1Val))
 		{
@@ -217,6 +220,8 @@ int main()
 		{
 			std::cout << "Bug in program :(\n";
 		}
+		gui.Unindent();
+		gui.Unindent();
 
 		gui.EndScrollArea(false);
 

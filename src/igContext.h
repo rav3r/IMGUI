@@ -102,6 +102,9 @@ struct igContext
 	void BeginScrollArea(igIdent id, float x, float y, float width, float height, int& offset);
 	void EndScrollArea(bool scrollbarRight);
 
+	void Indent();
+	void Unindent();
+
 	igButton Button(igIdent id, const char* title);
 	bool Checkbox(igIdent id, bool value, const char* title);
 	bool TextBox(igIdent id, std::string& value);
@@ -116,7 +119,7 @@ struct igContext
 		
 		float x = scrollArea.currX+marginX;
 		float y = scrollArea.currY;
-		float width = scrollArea.width-2*marginX;
+		float width = scrollArea.width-2*marginX-(scrollArea.currX-scrollArea.startX);
 
 		if(MouseInside(x, y, width, height) && dragPointer!=&userData &&
 			dynamic_cast<R*>(dragPointer)!=0)
