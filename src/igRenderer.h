@@ -31,6 +31,8 @@ public:
 							float width, float height, const char* title, bool value) = 0;
 
 	virtual void DrawScrollArea(int style, float x, float y, float width, float height) = 0;
+	
+	virtual void DrawSeparator(float x, float y, float width, float height) = 0;
 };
 
 #endif

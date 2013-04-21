@@ -41,6 +41,11 @@ public:
 	virtual ~igDraggable() {}
 };
 
+// todo: rename
+const int newLineSize = 34;
+const int marginY = 2;
+const int marginX = 5;
+
 struct igContext
 {
 	float mouseX;
@@ -95,6 +100,7 @@ struct igContext
 		int startX, startY;
 		int currX, currY;
 		int width, height;
+		int indent;
 		igIdent id;
 		int* offset;
 	} scrollArea;
@@ -102,24 +108,28 @@ struct igContext
 	void BeginScrollArea(igIdent id, float x, float y, float width, float height, int& offset);
 	void EndScrollArea(bool scrollbarRight);
 
+	void NewLine();
+
 	void Indent();
 	void Unindent();
+	void Separator();
 
-	igButton Button(igIdent id, const char* title);
+	igButton Button(igIdent id, const char* title, int width=0);
 	bool Checkbox(igIdent id, bool value, const char* title);
-	bool TextBox(igIdent id, std::string& value);
-	igDraggable* Drag(igIdent id, const char* title, igDraggable* userData, igAcceptDrop fun=igAlwaysAcceptDrop);
+	bool TextBox(igIdent id, std::string& value, int width=0);
 
 	template <class R>
-	R* Drag(igIdent id, const char* title, igDraggable& userData, igAcceptDrop fun=igAlwaysAcceptDrop)
+	R* Drag(igIdent id, const char* title, igDraggable& userData, igAcceptDrop fun=igAlwaysAcceptDrop, int width=0)
 	{
 		const int marginX = 5;
-		const int marginY = 5;
 		const int height = 30;
+		const int x = scrollArea.currX;
+		const int y = scrollArea.currY;
 		
-		float x = scrollArea.currX+marginX;
-		float y = scrollArea.currY;
-		float width = scrollArea.width-2*marginX-(scrollArea.currX-scrollArea.startX);
+		bool maxSize = width == 0;
+
+		if(maxSize)
+			width = scrollArea.width - (scrollArea.currX-scrollArea.startX) - marginX;
 
 		if(MouseInside(x, y, width, height) && dragPointer!=&userData &&
 			dynamic_cast<R*>(dragPointer)!=0)
@@ -127,7 +137,10 @@ struct igContext
 
 		igDraggable* result = Drag(id, x, y, width, height, title, &userData, fun);
 
-		scrollArea.currY += height + marginY;
+		if(maxSize)
+			NewLine();
+		else 
+			scrollArea.currX += width + marginX;
 
 		return dynamic_cast<R*>(result);
 	}

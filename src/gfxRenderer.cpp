@@ -135,3 +135,8 @@ void gfxRenderer::DrawScrollArea(int style, float x, float y, float width, float
 {
 	gfxDrawRectangle(x, y, width, height, style);
 }
+
+void gfxRenderer::DrawSeparator( float x, float y, float width, float height )
+{
+	gfxDrawRectangle(x+5, y, width - 10, height, GFX_STYLE_NONE);
+}

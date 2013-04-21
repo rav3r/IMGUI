@@ -33,6 +33,8 @@ public:
 					float width, float height, const char* title, bool value);
 
 	void DrawScrollArea(int style, float x, float y, float width, float height);
+
+	void DrawSeparator(float x, float y, float width, float height);
 };
 
 #endif

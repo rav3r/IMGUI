@@ -39,8 +39,9 @@ private:
 	std::vector<DragTreeNode*> children;
 	DragTreeNode* parent;
 	std::string name;
+	bool expand;
 public:
-	DragTreeNode(std::string n, DragTreeNode* p=0): parent(p), name(n) {}
+	DragTreeNode(std::string n, DragTreeNode* p=0): parent(p), name(n), expand(true) {}
 
 	void RemoveChild(DragTreeNode* child)
 	{
@@ -68,10 +69,14 @@ public:
 
 	void DoGUI(igContext &gui)
 	{
+		if(gui.Checkbox(GEN_ID(*this), expand, 0))
+			expand = !expand;
 		if(DragTreeNode* child = gui.Drag<DragTreeNode>(GEN_ID(*this), name.c_str(), *this))
 		{
 			AddChild(child);
 		}
+		if(!expand)
+			return;
 		gui.Indent();
 		for(int i=0; i<children.size(); i++)
 			children[i]->DoGUI(gui);
@@ -175,7 +180,7 @@ int main()
 		gui.Begin();
 
 		static int leftScrollbarOffset = 0;
-		gui.BeginScrollArea(GEN_NULL_ID, 10, 10, 120, size.y-20, leftScrollbarOffset);
+		gui.BeginScrollArea(GEN_NULL_ID, 10, 10, 220, size.y-20, leftScrollbarOffset);
 
 		gui.Button(GEN_NULL_ID, "Button 1");
 		gui.Button(GEN_NULL_ID, "Button 2");
@@ -195,21 +200,15 @@ int main()
 			gui.Button(GEN_NULL_ID, "Button 4");
 		}
 		static std::string text1 = "Edit me!";
-		gui.TextBox(GEN_NULL_ID, text1);
+		gui.TextBox(GEN_NULL_ID, text1, 100);
+		gui.Button(GEN_NULL_ID, "do it!");
 		static std::string text2 = "Or me!";
 		gui.TextBox(GEN_NULL_ID, text2);
-		gui.Button(GEN_NULL_ID, "Button 1");
-		gui.Button(GEN_NULL_ID, "Button 2");
-		gui.Button(GEN_NULL_ID, "Button 3");
-		gui.Button(GEN_NULL_ID, "Button 4");
-		gui.Button(GEN_NULL_ID, "Button 1");
-		gui.Button(GEN_NULL_ID, "Button 2");
-		gui.Button(GEN_NULL_ID, "Button 3");
-		gui.Button(GEN_NULL_ID, "Button 4");
-		gui.Button(GEN_NULL_ID, "Button -5");
-		gui.Button(GEN_NULL_ID, "Button -4");
-		gui.Button(GEN_NULL_ID, "Button -3");
-		gui.Button(GEN_NULL_ID, "Button -2");
+		for(int i=0; i<50; i++)
+		{
+			gui.Button(GEN_IID(i), "Button 1", 100);
+			gui.Button(GEN_IID(i), "But", 0);
+		}
 		gui.Button(GEN_NULL_ID, "Button -1");
 
 		gui.EndScrollArea(true);
@@ -219,6 +218,7 @@ int main()
 
 		root->DoGUI(gui);
 
+		gui.Separator();
 		if(gui.Button(GEN_NULL_ID, "Add node").onClicked)
 		{
 			id++;
@@ -227,136 +227,7 @@ int main()
 
 		gui.EndScrollArea(false);
 
-		/*
-
-		gui.Drag(GEN_NULL_ID, 500, 500, 40, 20, "drag");
-		gui.Drag(GEN_NULL_ID, 550, 500, 40, 20, "drag");
-		gui.Drag(GEN_NULL_ID, 600, 500, 40, 20, "drag");
-
-		if(gui.Move(GEN_NULL_ID, moveX, moveY, 50, 20, "move"))
-		{
-			moveY = int(moveY/10+0.5f)*10;
-			moveX = int(moveX/10+0.5f)*10;
-			std::cout << moveX << " " << moveY << "\n";
-		}
-
-		if(gui.Checkbox(GEN_ID(checkboxValue), 300, 100, 10, 10, checkboxValue))
-		{
-			checkboxValue = !checkboxValue;
-		}
-
-		for(int i=0; i<5; i++)
-			if(gui.Checkbox(GEN_ID(checkboxIds[i]), 300 + i*12, 130, 10, 10, choice == i))
-				choice = i;
-
-		if(checkboxValue)
-		{
-			if(igButton b = gui.Button(GEN_NULL_ID, 100, 100, 100, 30, "Click me 1!"))
-			{
-				if(b.onClicked)
-					std::cout << "button 1 clicked\n";
-			}
-			if(igButton b = gui.Button(GEN_NULL_ID, 100, 150, 100, 30, "Click me 2!"))
-			{
-				if(b.onClicked)
-					std::cout << "button 2 clicked\n";
-			}
-			if(igButton b = gui.Button(GEN_NULL_ID, 100, 200, 100, 30, "AVOCADO!"))
-			{
-				if(b.onClicked)
-					std::cout << "button 3 clicked\n";
-			}
-			if(igButton b = gui.Button(GEN_NULL_ID, 100, 250, 100, 30, "IMGUI!"))
-			{
-				if(b.onClicked)
-					std::cout << "button 4 clicked\n";
-			}
-			if(igButton b = gui.Button(GEN_NULL_ID, 100, 300, 100, 30, "Click me 5!"))
-			{
-				if(b.onClicked)
-					std::cout << "button 5 clicked\n";
-			}
-		}
-
-		if(gui.VSlider(GEN_ID(vSliderValue), 10, 10, 20, 400, 0.3f, vSliderValue))
-			std::cout << "V val changed: "<<vSliderValue<<"\n";
-		if(gui.HSlider(GEN_ID(hSliderValue), 100, 10, 400, 20, 0.1f, hSliderValue))
-			std::cout << "H val changed: "<<hSliderValue<<"\n";
-
-		if(gui.TextBox(GEN_ID(textboxValue), 600, 10, 100, 20, textboxValue))
-			;
-
-		if(gui.TextBox(GEN_ID(textboxValue), 600, 40, 100, 20, textboxValue))
-			;
-
-		if(gui.TextBox(GEN_ID(textboxValue2), 600, 70, 100, 20, textboxValue2))
-			;
-
-		for(int i=0; i<5; i++)
-		{
-			if(gui.Tab(GEN_ID(tabs[i]), 100+40*i, 50 + ((currTab == i) ? 0:2), 40, 30, "TAB", currTab == i))
-			{
-				currTab = i;
-			}
-		}
-		for(int i=0; i<5; i++)
-			tabs[i] = i==currTab;
-
-		float sizerSize = 20.0f;
-		float sizerX, sizerY;
-		float copyX, copyY;
-
-		copyX = sizerX = objectX - sizerSize;
-		copyY = sizerY = objectY;
-		if(gui.Move(GEN_NULL_ID, sizerX, sizerY, sizerSize, objectHeight, 0))
-		{
-			objectX = sizerX + sizerSize;
-			objectWidth -= sizerX - copyX;
-			if(objectWidth < 0)
-			{
-				objectX += objectWidth;
-				objectWidth = 0;
-			}
-		}
-
-		copyX = sizerX = objectX + objectWidth;
-		copyY = sizerY = objectY;
-		if(gui.Move(GEN_NULL_ID, sizerX, sizerY, sizerSize, objectHeight, 0))
-		{
-			objectWidth += sizerX - copyX;
-			if(objectWidth < 0)
-			{
-				objectWidth = 0;
-			}
-		}
-
-		copyX = sizerX = objectX;
-		copyY = sizerY = objectY - sizerSize;
-		if(gui.Move(GEN_NULL_ID, sizerX, sizerY, objectWidth, sizerSize, 0))
-		{
-			objectY = sizerY + sizerSize;
-			objectHeight -= sizerY - copyY;
-			if(objectHeight < 0)
-			{
-				objectY += objectHeight;
-				objectHeight = 0;
-			}
-		}
-
-		copyX = sizerX = objectX;
-		copyY = sizerY = objectY + objectHeight;
-		if(gui.Move(GEN_NULL_ID, sizerX, sizerY, objectWidth, sizerSize, 0))
-		{
-			objectHeight += sizerY - copyY;
-			if(objectHeight < 0)
-			{
-				objectHeight = 0;
-			}
-		}
-*/
 		gui.End();
-
-		//gfxDrawRectangle(objectX, objectY, objectWidth, objectHeight, GFX_STYLE_CHECKBOX);
 
 		window.display();
 	}

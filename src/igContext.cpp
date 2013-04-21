@@ -339,10 +339,12 @@ bool igContext::Tab(igIdent id, float x, float y, float width, float height, con
 
 void igContext::BeginScrollArea( igIdent id, float x, float y, float width, float height, int& offset )
 {
-	scrollArea.startX = scrollArea.currX = x; scrollArea.startY = y;
+	scrollArea.startX = x; scrollArea.startY = y;
+	scrollArea.currX = scrollArea.startX + marginX + scrollArea.indent;
 	scrollArea.width = width; scrollArea.height = height;
 	scrollArea.id = id;
 	scrollArea.offset = &offset;
+	scrollArea.indent = 0;
 
 	scrollArea.currY = y - *scrollArea.offset;
 
@@ -383,67 +385,69 @@ void igContext::EndScrollArea(bool scrollbarRight)
 	if(*scrollArea.offset < 0) *scrollArea.offset = 0;
 }
 
-igButton igContext::Button( igIdent id, const char* title )
+
+
+void igContext::NewLine()
 {
-	const int marginX = 5;
-	const int marginY = 5;
+	scrollArea.currY += newLineSize;
+	scrollArea.currX = scrollArea.startX + marginX + scrollArea.indent;
+}
+
+igButton igContext::Button( igIdent id, const char* title, int width )
+{
 	const int height = 30;
 	
-	const int x = scrollArea.currX+marginX;
-	const int y = scrollArea.currY;
-	const int width = scrollArea.width-2*marginX-(scrollArea.currX-scrollArea.startX);
+	const int x = scrollArea.currX;
+	const int y = scrollArea.currY+marginY;
+
+	bool maxSize = width == 0;
+
+	if(maxSize)
+		width = scrollArea.width - (scrollArea.currX-scrollArea.startX) - marginX;
 
 	igButton button = Button(id, x, y, width, height, title);
 
-	scrollArea.currY += height + marginY;
+	if(maxSize)
+		NewLine();
+	else 
+		scrollArea.currX += width + marginX;
 
 	return button;
 }
 
-bool igContext::Checkbox( igIdent id, bool value, const char* title )
+bool igContext::Checkbox( igIdent id, bool value, const char* title)
 {
 	const int marginX = 5;
-	const int marginY = 5;
 	const int size = 16;
 	const int height = 30;
-	const int x = scrollArea.currX+marginX;
+	const int x = scrollArea.currX;
 	const int y = scrollArea.currY+height/2-size/2;
 
 	bool result = Checkbox(id, x, y, size, size, value);
 
-	scrollArea.currY += height;
+	scrollArea.currX += size + marginX;
 
 	return result;
 }
 
-bool igContext::TextBox( igIdent id, std::string& value )
+bool igContext::TextBox( igIdent id, std::string& value, int width )
 {
 	const int marginX = 5;
-	const int marginY = 5;
 	const int height = 30;
-	const int x = scrollArea.currX+marginX;
-	const int y = scrollArea.currY;
-	const int width = scrollArea.width-2*marginX-(scrollArea.currX-scrollArea.startX);
+	const int x = scrollArea.currX;
+	const int y = scrollArea.currY+marginY;
+
+	bool maxSize = width == 0;
+
+	if(maxSize)
+		width = scrollArea.width - (scrollArea.currX-scrollArea.startX) - marginX;
 
 	bool result = TextBox(id, x, y, width, height, value);
 
-	scrollArea.currY += height + marginY;
-
-	return result;
-}
-
-igDraggable* igContext::Drag( igIdent id, const char* title, igDraggable* userData, igAcceptDrop fun )
-{
-	const int marginX = 5;
-	const int marginY = 5;
-	const int height = 30;
-	const int x = scrollArea.currX+marginX;
-	const int y = scrollArea.currY;
-	const int width = scrollArea.width-2*marginX-(scrollArea.currX-scrollArea.startX);
-
-	igDraggable* result = Drag(id, x, y, width, height, title, userData, fun);
-
-	scrollArea.currY += height + marginY;
+	if(maxSize)
+		NewLine();
+	else 
+		scrollArea.currX += width + marginX;
 
 	return result;
 }
@@ -452,10 +456,18 @@ const int indentSize = 20;
 
 void igContext::Indent()
 {
-	scrollArea.currX += indentSize;
+	scrollArea.indent += indentSize;
+	scrollArea.currX = scrollArea.startX + marginX + scrollArea.indent;
 }
 
 void igContext::Unindent()
 {
-	scrollArea.currX -= indentSize;
+	scrollArea.indent -= indentSize;
+	scrollArea.currX = scrollArea.startX + marginX + scrollArea.indent;
+}
+
+void igContext::Separator()
+{
+	renderer->DrawSeparator(scrollArea.startX, scrollArea.currY + marginY + newLineSize/2 - 2, scrollArea.width, 4);
+	NewLine();
 }
