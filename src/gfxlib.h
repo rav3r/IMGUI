@@ -18,6 +18,8 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style);
 
 void gfxPrint(float x, float y, const char* text, int style, int pipePos = -1);
 
+int gfxCharAt(float x, float y, const char* text, int style, float mouseX);
+
 void gfxScissor(int x, int y, int width, int height);
 
 void gfxDisableScissor();

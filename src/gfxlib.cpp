@@ -104,8 +104,24 @@ void gfxPrint(float x, float y, const char* str, int style, int pipePos)
 		_Text.setColor(sf::Color(0, 0, 255));
 		float xDiff = currText.getLocalBounds().width - dotText.getLocalBounds().width;
 		_Text.setPosition(sf::Vector2f(pos.x + xDiff, pos.y));
-		gWindow->draw(_Text);
+		//gWindow->draw(_Text);
+		gfxDrawRectangle(pos.x + xDiff-2, pos.y-charSize/2, 2, charSize*2, GFX_STYLE_ELEM_PRESSED);
 	} 
+}
+
+int gfxCharAt( float x, float y, const char* str, int style, float mouseX )
+{
+	const int charSize = 16;
+
+	sf::Text text(str, *gFont, charSize);
+	sf::FloatRect r = text.getLocalBounds();
+	sf::Vector2f pos = sf::Vector2f(x - (r.left+r.width)/2.0f, y - text.getCharacterSize()/2.0f);
+	pos = sf::Vector2f((int)pos.x, (int)pos.y);
+	text.setPosition(pos);
+	int character = 0;
+	while(character < text.getString().getSize() && text.findCharacterPos(character+1).x < mouseX)
+		character++;
+	return character;
 }
 
 #ifdef WIN32

@@ -203,7 +203,8 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 		{
 			activeItem = id;
 			keyboardItem = id;
-			textCharPos = value.size();
+			textCharPos = gfxCharAt(x+width/2.0f, y + height/2.0f, value.c_str(), 0, mouseX);
+			std::cout << "text char "<<textCharPos <<"\n";
 		}
 	}
 
