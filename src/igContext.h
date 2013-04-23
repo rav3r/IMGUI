@@ -46,8 +46,28 @@ const int newLineSize = 34;
 const int marginY = 2;
 const int marginX = 5;
 
-struct igContext
+class igContext
 {
+private:
+	// clipping mouse area
+	struct
+	{
+		float x, y;
+		float width, height;
+		bool active;
+	} currentMouseClipping;
+
+	// scroll area
+	struct
+	{
+		int startX, startY;
+		int currX, currY;
+		int width, height;
+		int indent;
+		igIdent id;
+		int* offset;
+	} scrollArea;
+public:
 	float mouseX;
 	float mouseY;
 
@@ -82,6 +102,8 @@ struct igContext
 
     bool MouseInside(float x, float y, float width, float height);
 
+	bool MouseClipped();
+
 	void Begin();
 	void End();
     
@@ -94,16 +116,7 @@ struct igContext
 	bool Move(igIdent id, float& x, float& y, float width, float height, const char* title);
 	bool Tab(igIdent id, float x, float y, float width, float height, const char* title, bool value);
 
-	// scroll area
-	struct
-	{
-		int startX, startY;
-		int currX, currY;
-		int width, height;
-		int indent;
-		igIdent id;
-		int* offset;
-	} scrollArea;
+	// Scroll area
 
 	void BeginScrollArea(igIdent id, float x, float y, float width, float height, int& offset);
 	void EndScrollArea(bool scrollbarRight);

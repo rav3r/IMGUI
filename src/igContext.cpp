@@ -27,7 +27,30 @@ igContext::igContext(igRenderer* rend):
 
 bool igContext::MouseInside(float x, float y, float width, float height)
 {
+	if(MouseClipped())
+		return false;
+
     return mouseX >= x && mouseY >= y && mouseX <= x+width && mouseY <= y+height;
+}
+
+bool igContext::MouseClipped()
+{
+	if(!currentMouseClipping.active)
+		return false;
+
+	if(mouseX < currentMouseClipping.x)
+		return true;
+
+	if(mouseY < currentMouseClipping.y)
+		return true;
+
+	if(mouseX > currentMouseClipping.x+currentMouseClipping.width)
+		return true;
+
+	if(mouseY > currentMouseClipping.y+currentMouseClipping.height)
+		return true;
+
+	return false;
 }
 
 void igContext::Begin()
@@ -37,6 +60,7 @@ void igContext::Begin()
 	hotItem = nullId;
 	if(textCharPos < 0)
 		textCharPos = 0;
+	currentMouseClipping.active = false;
 }
 
 void igContext::End()
@@ -339,6 +363,10 @@ bool igContext::Tab(igIdent id, float x, float y, float width, float height, con
 
 void igContext::BeginScrollArea( igIdent id, float x, float y, float width, float height, int& offset )
 {
+	currentMouseClipping.active = true;
+	currentMouseClipping.x = x;			currentMouseClipping.y = y;
+	currentMouseClipping.width = width;	currentMouseClipping.height = height;
+
 	scrollArea.startX = x; scrollArea.startY = y;
 	scrollArea.currX = scrollArea.startX + marginX + scrollArea.indent;
 	scrollArea.width = width; scrollArea.height = height;
@@ -355,6 +383,7 @@ void igContext::BeginScrollArea( igIdent id, float x, float y, float width, floa
 
 void igContext::EndScrollArea(bool scrollbarRight)
 {
+	currentMouseClipping.active = false;
 	gfxDisableScissor();
 	float totalSize = (float)(scrollArea.currY - scrollArea.startY + *scrollArea.offset);
 	float aspect = scrollArea.height/totalSize;

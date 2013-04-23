@@ -180,7 +180,7 @@ int main()
 		gui.Begin();
 
 		static int leftScrollbarOffset = 0;
-		gui.BeginScrollArea(GEN_NULL_ID, 10, 10, 220, size.y-20, leftScrollbarOffset);
+		gui.BeginScrollArea(GEN_NULL_ID, 10, 100, 220, size.y-200, leftScrollbarOffset);
 
 		gui.Button(GEN_NULL_ID, "Button 1");
 		gui.Button(GEN_NULL_ID, "Button 2");
@@ -206,10 +206,11 @@ int main()
 		gui.TextBox(GEN_NULL_ID, text2);
 		for(int i=0; i<50; i++)
 		{
-			gui.Button(GEN_IID(i), "Button 1", 100);
-			gui.Button(GEN_IID(i), "But", 0);
+			if(gui.Button(GEN_IID(i), "Button 1").onClicked)
+			{
+				std::cout << "clicked " << i<<"\n";
+			}
 		}
-		gui.Button(GEN_NULL_ID, "Button -1");
 
 		gui.EndScrollArea(true);
 
