@@ -19,7 +19,8 @@ public:
 							float width, float height, float aspect, const float& value) = 0;
 
 	virtual void DrawTextBox(int state, int style, float x, float y,
-							float width, float height, const std::string& value, int textCharPos) = 0;
+							float width, float height, const std::string& value,
+							int textCharPos, int textCharPos2) = 0;
 
 	virtual void DrawDrag(int state, int style, float x, float y,
 							float width, float height, const char* title) = 0;

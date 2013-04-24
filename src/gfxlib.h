@@ -11,12 +11,13 @@
 #define GFX_STYLE_TEXTBOX_BG 7
 #define GFX_STYLE_CAN_DRAG 8
 #define GFX_STYLE_CAN_NOT_DRAG 9
+#define GFX_STYLE_SELECTED 10
 
 // External functions used by lib
 
 void gfxDrawRectangle(float x, float y, float width, float height, int style);
 
-void gfxPrint(float x, float y, const char* text, int style, int pipePos = -1);
+void gfxPrint(float x, float y, const char* text, int style, int pipePos = -1, int pipe2Pos = -1);
 
 int gfxCharAt(float x, float y, const char* text, int style, float mouseX);
 

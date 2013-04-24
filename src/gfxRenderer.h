@@ -21,7 +21,8 @@ public:
 					float width, float height, float aspect, const float& value);
 
 	void DrawTextBox(int state, int style, float x, float y,
-					float width, float height, const std::string& value, int textCharPos);
+					float width, float height, const std::string& value,
+					int textCharPos, int textCharPos2);
 
 	void DrawDrag(int state, int style, float x, float y,
 					float width, float height, const char* title);

@@ -59,7 +59,7 @@ void gfxRenderer::DrawHSlider( int state, int style, float x, float y, float wid
 	gfxDrawRectangle(x+value*width, y+margin, thumbSize, height-margin*2.0f, GFX_STYLE_SLIDER_THUMB);
 }
 
-void gfxRenderer::DrawTextBox( int state, int style, float x, float y, float width, float height, const std::string& value, int textCharPos )
+void gfxRenderer::DrawTextBox( int state, int style, float x, float y, float width, float height, const std::string& value, int textCharPos, int textCharPos2)
 {
 	// draw text box
 	if(state & igItemStates::PRESSED)
@@ -74,10 +74,14 @@ void gfxRenderer::DrawTextBox( int state, int style, float x, float y, float wid
 	}
 
 	int pipePos = state & igItemStates::TEXT_FOCUS ? textCharPos : -1;
-	if(time % 500 >= 250)
+	int pipe2Pos = state & igItemStates::TEXT_FOCUS ? textCharPos2 : -1;
+	if(time % 500 >= 250 && textCharPos == textCharPos2)
 		pipePos = -1;
 
-	gfxPrint(x + width/2.0f, y + height/2.0f, value.c_str(), GFX_STYLE_NONE, pipePos); 
+	if(pipePos > pipe2Pos)
+		std::swap(pipePos, pipe2Pos);
+
+	gfxPrint(x + width/2.0f, y + height/2.0f, value.c_str(), GFX_STYLE_NONE, pipePos, pipe2Pos); 
 }
 
 void gfxRenderer::DrawDrag( int state, int style, float x, float y, float width, float height, const char* title )

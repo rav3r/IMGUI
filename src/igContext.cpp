@@ -21,8 +21,11 @@ igContext::igContext(igRenderer* rend):
 	backspace = false;
 
 	textCharPos = 0;
+	textCharPos2 = 0;
 
 	dragPointer = 0;
+
+	shift = false;
 }
 
 bool igContext::MouseInside(float x, float y, float width, float height)
@@ -60,6 +63,8 @@ void igContext::Begin()
 	hotItem = nullId;
 	if(textCharPos < 0)
 		textCharPos = 0;
+	if(textCharPos2 < 0)
+		textCharPos2 = 0;
 	currentMouseClipping.active = false;
 }
 
@@ -203,8 +208,7 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 		{
 			activeItem = id;
 			keyboardItem = id;
-			textCharPos = gfxCharAt(x+width/2.0f, y + height/2.0f, value.c_str(), 0, mouseX);
-			std::cout << "text char "<<textCharPos <<"\n";
+			textCharPos2 = textCharPos = gfxCharAt(x+width/2.0f, y + height/2.0f, value.c_str(), 0, mouseX);
 		}
 	}
 
@@ -213,32 +217,67 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 		if(textCharPos > value.size())
 			textCharPos = value.size();
 
+		if(textCharPos2 > value.size())
+			textCharPos2 = value.size();
+
 		if(charEntered)
 		{
 			for(int i=0; i<charset.size(); i++)
 				if(charset[i] == charEntered)
 				{
-					value.insert(textCharPos, 1, (char)charEntered);
-					textCharPos++;
+					int pipePos1 = textCharPos;
+					int pipePos2 = textCharPos2;
+
+					if(pipePos1 > pipePos2)
+						std::swap(pipePos1, pipePos2);
+
+					value.erase(pipePos1, pipePos2-pipePos1);
+					value.insert(pipePos1, 1, (char)charEntered);
+					pipePos1++;
+					textCharPos2 = textCharPos = pipePos1;
 					break;
 				}
 		}
 
-		if(charEntered == 8 && textCharPos > 0) // backspace
+		if(charEntered == 8 && (textCharPos > 0 || textCharPos!=textCharPos2)) // backspace
 		{
-			textCharPos--;
-			value.erase(textCharPos, 1);
+			if(textCharPos != textCharPos2)
+			{
+				int pipePos1 = textCharPos;
+				int pipePos2 = textCharPos2;
+
+				if(pipePos1 > pipePos2)
+					std::swap(pipePos1, pipePos2);
+
+				value.erase(pipePos1, pipePos2-pipePos1);
+				textCharPos2 = textCharPos = pipePos1;
+			} else
+			{
+				textCharPos--;
+				value.erase(textCharPos, 1);
+			}
 		}
 
 		if(charEntered == 127) // delete
 		{
-			value.erase(textCharPos, 1);
+			if(textCharPos != textCharPos2)
+			{
+				int pipePos1 = textCharPos;
+				int pipePos2 = textCharPos2;
+
+				if(pipePos1 > pipePos2)
+					std::swap(pipePos1, pipePos2);
+
+				value.erase(pipePos1, pipePos2-pipePos1);
+				textCharPos2 = textCharPos = pipePos1;
+			} else
+				value.erase(textCharPos, 1);
 		}
 	}
 
 	int state = igItemStates::NONE;
 	if(keyboardItem == id) state |= igItemStates::TEXT_FOCUS;
-	renderer->DrawTextBox(state, 0, x, y, width, height, value, textCharPos);
+	renderer->DrawTextBox(state, 0, x, y, width, height, value, textCharPos, textCharPos2);
 
 	return prevValue != value;
 }
@@ -500,4 +539,34 @@ void igContext::Separator()
 {
 	renderer->DrawSeparator(scrollArea.startX, scrollArea.currY + marginY + newLineSize/2 - 2, scrollArea.width, 4);
 	NewLine();
+}
+
+void igContext::ArrowLeftDown()
+{
+	if(shift)
+	{
+		textCharPos--;
+	} else if(textCharPos == textCharPos2)
+	{
+		textCharPos--;
+		textCharPos2 = textCharPos;
+	} else 
+	{
+		textCharPos2 = textCharPos;
+	}
+}
+
+void igContext::ArrowRightDown()
+{
+	if(shift)
+	{
+		textCharPos++;
+	} else if(textCharPos == textCharPos2)
+	{
+		textCharPos++;
+		textCharPos2 = textCharPos;
+	} else
+	{
+		textCharPos2 = textCharPos;
+	}
 }

@@ -128,6 +128,7 @@ int main()
 		
 		for(int i=0; i<10 && window.pollEvent(event); i++)
 		{
+			gui.shift = event.key.shift;
 			if(event.type == sf::Event::Closed)
 				window.close();
 			if(event.type == sf::Event::MouseWheelMoved)
@@ -163,9 +164,9 @@ int main()
 				if(event.key.code == sf::Keyboard::Back)
 					gui.backspace = true;
 				if(event.key.code == sf::Keyboard::Left)
-					gui.textCharPos--;
+					gui.ArrowLeftDown();
 				if(event.key.code == sf::Keyboard::Right)
-					gui.textCharPos++;
+					gui.ArrowRightDown();
 				if(event.key.code == sf::Keyboard::Delete)
 					gui.charEntered = 127;
 			}

@@ -80,7 +80,10 @@ public:
 	bool backspace;
 	wchar_t charEntered;
 
+	bool shift;
+
 	int textCharPos;
+	int textCharPos2;
 
 	igIdent hotItem;
 	igIdent activeItem;
@@ -99,6 +102,9 @@ public:
 	igRenderer* renderer;
 
 	igContext(igRenderer* rend);
+
+	void ArrowLeftDown();
+	void ArrowRightDown();
 
     bool MouseInside(float x, float y, float width, float height);
 

@@ -51,6 +51,8 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style)
 		shape.setFillColor(sf::Color(50, 100, 50));
 	else if(style == GFX_STYLE_CAN_NOT_DRAG)
 		shape.setFillColor(sf::Color(100, 50, 50));
+	else if(style == GFX_STYLE_SELECTED)
+		shape.setFillColor(sf::Color(0, 0, 255));
 	else
 		shape.setFillColor(checkboxColor);
 	    
@@ -80,7 +82,7 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style)
 	gWindow->draw(rightBorder);
 }
 
-void gfxPrint(float x, float y, const char* str, int style, int pipePos)
+void gfxPrint(float x, float y, const char* str, int style, int pipePos, int pipe2Pos)
 {
 	const int charSize = 16;
 
@@ -90,6 +92,13 @@ void gfxPrint(float x, float y, const char* str, int style, int pipePos)
 	pos = sf::Vector2f((int)pos.x, (int)pos.y);
 	text.setPosition(pos);
 	text.setColor(textColor);
+
+	if(pipePos != -1)
+	{
+		float p1 = text.findCharacterPos(pipePos).x;
+		float p2 = text.findCharacterPos(pipe2Pos).x;
+		gfxDrawRectangle(p1, pos.y-charSize/2, p2-p1, charSize*2, GFX_STYLE_ELEM_HOVER);
+	}
 
 	gWindow->draw(text);
 
@@ -119,7 +128,7 @@ int gfxCharAt( float x, float y, const char* str, int style, float mouseX )
 	pos = sf::Vector2f((int)pos.x, (int)pos.y);
 	text.setPosition(pos);
 	int character = 0;
-	while(character < text.getString().getSize() && text.findCharacterPos(character+1).x < mouseX)
+	while(character < text.getString().getSize() && text.findCharacterPos(character+1).x < mouseX+2)
 		character++;
 	return character;
 }
