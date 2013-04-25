@@ -85,6 +85,7 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style)
 void gfxPrint(float x, float y, const char* str, int style, int pipePos, int pipe2Pos)
 {
 	const int charSize = 16;
+	const int pipeSize = 12;
 
 	sf::Text text(str, *gFont, charSize);
 	sf::FloatRect r = text.getLocalBounds();
@@ -97,7 +98,7 @@ void gfxPrint(float x, float y, const char* str, int style, int pipePos, int pip
 	{
 		float p1 = text.findCharacterPos(pipePos).x;
 		float p2 = text.findCharacterPos(pipe2Pos).x;
-		gfxDrawRectangle(p1, pos.y-charSize/2, p2-p1, charSize*2, GFX_STYLE_ELEM_HOVER);
+		gfxDrawRectangle(p1, pos.y-pipeSize/2, p2-p1, pipeSize*2, GFX_STYLE_ELEM_HOVER);
 	}
 
 	gWindow->draw(text);
@@ -114,7 +115,7 @@ void gfxPrint(float x, float y, const char* str, int style, int pipePos, int pip
 		float xDiff = currText.getLocalBounds().width - dotText.getLocalBounds().width;
 		_Text.setPosition(sf::Vector2f(pos.x + xDiff, pos.y));
 		//gWindow->draw(_Text);
-		gfxDrawRectangle(pos.x + xDiff-2, pos.y-charSize/2, 2, charSize*2, GFX_STYLE_ELEM_PRESSED);
+		gfxDrawRectangle(pos.x + xDiff-2, pos.y-pipeSize/2, 2, pipeSize*2, GFX_STYLE_ELEM_PRESSED);
 	} 
 }
 

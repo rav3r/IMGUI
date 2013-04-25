@@ -92,7 +92,7 @@ int main()
 
 	sf::Font font;
 	gFont = &font;
-	if(!font.loadFromFile("data/Cabin-Regular.otf"))
+	if(!font.loadFromFile("data/SourceSansPro-Regular.otf"))
         	return EXIT_FAILURE;
 
 	gfxRenderer guiRend;
