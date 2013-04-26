@@ -46,8 +46,8 @@ void igRenderer::DrawVSlider( int state, int style, float x, float y, float widt
 	const float margin = 0.0f;
 	float thumbSize = height * aspect;
 
-	gfxDrawRectangle(x, y, width, height, GFX_STYLE_SLIDER_BG);
-	gfxDrawRectangle(x+margin, y+value*height, width-margin*2, thumbSize, GFX_STYLE_SLIDER_THUMB);
+	gfxDrawRectangle(x, y, width, height, GFX_STYLE_SLIDER_BG, false);
+	gfxDrawRectangle(x+margin, y+value*height, width-margin*2, thumbSize, GFX_STYLE_SLIDER_THUMB, false);
 }
 
 void igRenderer::DrawHSlider( int state, int style, float x, float y, float width, float height, float aspect, const float& value )
@@ -55,8 +55,8 @@ void igRenderer::DrawHSlider( int state, int style, float x, float y, float widt
 	const float margin = 0.0f;
 	float thumbSize = width * aspect;
 
-	gfxDrawRectangle(x, y, width, height, GFX_STYLE_SLIDER_BG);
-	gfxDrawRectangle(x+value*width, y+margin, thumbSize, height-margin*2.0f, GFX_STYLE_SLIDER_THUMB);
+	gfxDrawRectangle(x, y, width, height, GFX_STYLE_SLIDER_BG, false);
+	gfxDrawRectangle(x+value*width, y+margin, thumbSize, height-margin*2.0f, GFX_STYLE_SLIDER_THUMB, false);
 }
 
 void igRenderer::DrawTextBox( int state, int style, float x, float y, float width, float height, const std::string& value, int textCharPos, int textCharPos2)
@@ -137,7 +137,7 @@ void igRenderer::DrawTab( int state, int style, float x, float y, float width, f
 
 void igRenderer::DrawScrollArea(int style, float x, float y, float width, float height)
 {
-	gfxDrawRectangle(x, y, width, height, style);
+	gfxDrawRectangle(x, y, width, height, style, false);
 }
 
 void igRenderer::DrawSeparator( float x, float y, float width, float height )

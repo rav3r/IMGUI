@@ -15,7 +15,7 @@
 
 // External functions used by lib
 
-void gfxDrawRectangle(float x, float y, float width, float height, int style);
+void gfxDrawRectangle(float x, float y, float width, float height, int style, bool border=true);
 
 void gfxPrint(float x, float y, const char* text, int style, int pipePos = -1, int pipe2Pos = -1);
 

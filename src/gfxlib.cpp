@@ -6,20 +6,6 @@
 extern sf::RenderWindow* gWindow;
 extern sf::Font* gFont;
 
-/*
-var. 1 = #1240AB = rgb(18,64,171) - textinput
-var. 2 = #2A4480 = rgb(42,68,128) - normal
-var. 3 = #06266F = rgb(6,38,111) - border
-var. 4 = #4671D5 = rgb(70,113,213) - hover
-var. 5 = #6C8CD5 = rgb(108,140,213) - active
-
-border +
-active +
-textInput 
-hover +
-normal
-*/
-
 static sf::Color textColor(255, 255, 255, 255);
 static sf::Color elementColor(85, 87, 82, 255);
 static sf::Color pressedElemColor(108,140,213,255);
@@ -27,12 +13,17 @@ static sf::Color hoverElemColor(70,113,213,255);
 static sf::Color checkboxColor(255, 255, 255, 255);
 static sf::Color borderColor(6,38,111,255);
 
-void gfxDrawRectangle(float x, float y, float width, float height, int style)
+void gfxDrawRectangle(float x, float y, float width, float height, int style, bool border)
 {
-	sf::RectangleShape shape(sf::Vector2f(width-2, height-2));
-	//shape.setOutlineThickness(1);
-	//shape.setOutlineColor(borderColor);
-	shape.setPosition(sf::Vector2f(x+1, y+1));
+	sf::RectangleShape shape(sf::Vector2f(width, height));
+	shape.setPosition(sf::Vector2f(x, y));
+
+	if(border)
+	{
+		shape.setSize(sf::Vector2f(width-2, height-2));
+		shape.setPosition(sf::Vector2f(x+1, y+1));
+	}
+
 	if(style == GFX_STYLE_NONE)
 	    shape.setFillColor(elementColor);
 	else if(style == GFX_STYLE_ELEM_PRESSED)
@@ -57,6 +48,9 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style)
 		shape.setFillColor(checkboxColor);
 	    
 	gWindow->draw(shape);
+
+	if(!border)
+		return;
 
 	sf::Color lighterBorderColor(117, 119, 114);
 	sf::Color darkerBorderColor(53, 55, 50);
@@ -98,12 +92,12 @@ void gfxPrint(float x, float y, const char* str, int style, int pipePos, int pip
 	{
 		float p1 = text.findCharacterPos(pipePos).x;
 		float p2 = text.findCharacterPos(pipe2Pos).x;
-		gfxDrawRectangle(p1, pos.y-pipeSize/2, p2-p1, pipeSize*2, GFX_STYLE_ELEM_HOVER);
+		gfxDrawRectangle(p1, pos.y-pipeSize/2, p2-p1, pipeSize*2, GFX_STYLE_ELEM_HOVER, false);
 	}
 
 	gWindow->draw(text);
 
-	if(pipePos >= 0)
+	if(pipePos >= 0 && pipePos == pipe2Pos)
 	{
 		std::string curr = str;
 		curr = curr.substr(0, pipePos);

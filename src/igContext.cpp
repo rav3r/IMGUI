@@ -258,6 +258,7 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 			} else
 			{
 				textCharPos--;
+				textCharPos2 = textCharPos;
 				value.erase(textCharPos, 1);
 			}
 		}
