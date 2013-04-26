@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "gfxlib.h"
-#include "gfxRenderer.h"
+#include "igRenderer.h"
 
 #include "IMGUI.h"
 
@@ -95,7 +95,7 @@ int main()
 	if(!font.loadFromFile("data/SourceSansPro-Regular.otf"))
         	return EXIT_FAILURE;
 
-	gfxRenderer guiRend;
+	igRenderer guiRend;
 	igContext gui(&guiRend);
 
 	bool checkboxValue = true;

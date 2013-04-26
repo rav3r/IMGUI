@@ -178,14 +178,6 @@
 				RelativePath=".\src\gfxlib.h"
 				>
 			</File>
-			<File
-				RelativePath=".\src\gfxRenderer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\gfxRenderer.h"
-				>
-			</File>
 		</Filter>
 		<File
 			RelativePath=".\src\igContext.cpp"
@@ -205,6 +197,10 @@
 		</File>
 		<File
 			RelativePath=".\src\igRect.h"
+			>
+		</File>
+		<File
+			RelativePath=".\src\igRenderer.cpp"
 			>
 		</File>
 		<File
