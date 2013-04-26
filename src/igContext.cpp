@@ -526,6 +526,14 @@ bool igContext::TextBox( igIdent id, std::string& value, int width )
 	return result;
 }
 
+void igContext::Space( int width )
+{
+	if(width == 0)
+		NewLine();
+	else
+		scrollArea.currX += width + marginX;
+}
+
 const int indentSize = 20;
 
 void igContext::Indent()
@@ -575,3 +583,4 @@ void igContext::ArrowRightDown()
 		textCharPos2 = textCharPos;
 	}
 }
+

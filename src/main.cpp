@@ -67,20 +67,27 @@ public:
 		children.push_back(child);
 	}
 
-	void DoGUI(igContext &gui)
+	void DoGUI(igContext &gui, int indent=0)
 	{
-		if(gui.Checkbox(GEN_ID(*this), expand, 0))
-			expand = !expand;
+		if(indent!=0) gui.Space(indent);
+
+		if(children.empty())
+			gui.Space(16);
+		else
+		{
+			if(gui.Checkbox(GEN_ID(*this), expand, 0))
+				expand = !expand;
+		}
 		if(DragTreeNode* child = gui.Drag<DragTreeNode>(GEN_ID(*this), name.c_str(), *this))
 		{
 			AddChild(child);
 		}
 		if(!expand)
 			return;
-		gui.Indent();
+		//gui.Indent();
 		for(int i=0; i<children.size(); i++)
-			children[i]->DoGUI(gui);
-		gui.Unindent();
+			children[i]->DoGUI(gui, indent+16+marginX);
+		//gui.Unindent();
 	}
 };
 

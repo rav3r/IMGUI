@@ -136,6 +136,7 @@ public:
 	igButton Button(igIdent id, const char* title, int width=0);
 	bool Checkbox(igIdent id, bool value, const char* title);
 	bool TextBox(igIdent id, std::string& value, int width=0);
+	void Space(int width);
 
 	template <class R>
 	R* Drag(igIdent id, const char* title, igDraggable& userData, igAcceptDrop fun=igAlwaysAcceptDrop, int width=0)
