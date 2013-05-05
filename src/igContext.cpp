@@ -210,6 +210,12 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 			keyboardItem = id;
 			textCharPos2 = textCharPos = gfxCharAt(x+width/2.0f, y + height/2.0f, value.c_str(), 0, mouseX);
 		}
+	} else if(leftDown && !leftLastDown)
+	{
+		if(keyboardItem == id)
+			keyboardItem = nullId;
+		if(activeItem == id)
+			activeItem = nullId;
 	}
 	if(leftDown && activeItem == id)
 	{
