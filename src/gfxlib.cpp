@@ -149,3 +149,34 @@ void gfxDisableScissor()
 {
 	glDisable(GL_SCISSOR_TEST);
 }
+
+void sysSetCliboardString(std::string str)
+{
+#ifdef WIN32
+	const char* output = str.c_str();
+	const size_t len = strlen(output) + 1;
+	HGLOBAL hMem =  GlobalAlloc(GMEM_MOVEABLE, len);
+	memcpy(GlobalLock(hMem), output, len);
+	GlobalUnlock(hMem);
+	OpenClipboard(0);
+	EmptyClipboard();
+	SetClipboardData(CF_TEXT, hMem);
+	CloseClipboard();
+#endif
+}
+
+std::string sysGetCliboardString()
+{
+	std::string out = "";
+#ifdef WIN32
+	if (OpenClipboard(0)) 
+	{
+		HANDLE hClipboardData = GetClipboardData(CF_TEXT);
+		char *pchData = (char*)GlobalLock(hClipboardData);
+		if(pchData) out = pchData;
+		GlobalUnlock(pchData);
+		CloseClipboard();
+	}
+#endif
+	return out;
+}

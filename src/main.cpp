@@ -176,6 +176,15 @@ int main()
 					gui.ArrowRightDown();
 				if(event.key.code == sf::Keyboard::Delete)
 					gui.charEntered = 127;
+				if(event.key.control)
+				{
+					if(event.key.code == sf::Keyboard::C)
+						gui.ctrlC = true;
+					if(event.key.code == sf::Keyboard::X)
+						gui.ctrlX = true;
+					if(event.key.code == sf::Keyboard::V)
+						gui.ctrlV = true;
+				}
 			}
 		}
 

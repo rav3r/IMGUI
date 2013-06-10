@@ -6,6 +6,9 @@
 
 static igIdent nullId = GEN_NULL_ID;
 
+void sysSetCliboardString(std::string str);
+std::string sysGetCliboardString();
+
 igContext::igContext(igRenderer* rend):
 	renderer(rend)
 {
@@ -26,6 +29,9 @@ igContext::igContext(igRenderer* rend):
 	dragPointer = 0;
 
 	shift = false;
+	ctrlC = false;
+	ctrlX = false;
+	ctrlV = false;
 }
 
 bool igContext::MouseInside(float x, float y, float width, float height)
@@ -94,6 +100,10 @@ void igContext::End()
 
 	mouseWheel = 0;
 	leftLastDown = leftDown;
+
+	ctrlC = false;
+	ctrlX = false;
+	ctrlV = false;
 }
 
 bool igContext::LeftJustUp()
@@ -283,6 +293,52 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 				textCharPos2 = textCharPos = pipePos1;
 			} else
 				value.erase(textCharPos, 1);
+		}
+
+		if(ctrlC)
+		{
+			int textPos1 = textCharPos < textCharPos2 ? textCharPos : textCharPos2;
+			int textPos2 = textCharPos > textCharPos2 ? textCharPos : textCharPos2;
+			if(textPos1 != textPos2)
+				sysSetCliboardString(value.substr(textPos1, textPos2-textPos1));
+			else
+				sysSetCliboardString(value);
+		}
+
+		if(ctrlX)
+		{
+			int textPos1 = textCharPos < textCharPos2 ? textCharPos : textCharPos2;
+			int textPos2 = textCharPos > textCharPos2 ? textCharPos : textCharPos2;
+			if(textPos1 != textPos2)
+			{
+				sysSetCliboardString(value.substr(textPos1, textPos2-textPos1));
+				value.erase(textPos1, textPos2-textPos1);
+				textCharPos2 = textCharPos = textPos1;
+			}
+		}
+
+		if(ctrlV)
+		{
+			int textPos1 = textCharPos < textCharPos2 ? textCharPos : textCharPos2;
+			int textPos2 = textCharPos > textCharPos2 ? textCharPos : textCharPos2;
+			if(textPos1 != textPos2)
+			{
+				value.erase(textPos1, textPos2-textPos1);
+				textCharPos2 = textCharPos = textPos1;
+			}
+
+			std::string clipboardText = sysGetCliboardString();
+			std::string allowedChars;
+			if(clipboardText.empty() == false) allowedChars.reserve(clipboardText.size());
+			for(int i=0; i<clipboardText.size(); i++)
+			{
+				for(int j=0; j<charset.size(); j++)
+					if(charset[j] == clipboardText[i])
+						allowedChars += clipboardText[i];
+			}
+
+			value = value.substr(0, textPos1) + allowedChars + value.substr(textPos1);
+			textCharPos2 = textCharPos = textPos1 + allowedChars.size();
 		}
 	}
 

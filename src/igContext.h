@@ -81,6 +81,9 @@ public:
 	wchar_t charEntered;
 
 	bool shift;
+	bool ctrlV;
+	bool ctrlX;
+	bool ctrlC;
 
 	int textCharPos;
 	int textCharPos2;
