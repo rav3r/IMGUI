@@ -17,7 +17,7 @@
 
 void gfxDrawRectangle(float x, float y, float width, float height, int style, bool border=true);
 
-void gfxPrint(float x, float y, const char* text, int style, int pipePos = -1, int pipe2Pos = -1);
+void gfxPrint(float x, float y, const char* text, int style, int pipePos = -1, int pipe2Pos = -1, int halign=0);
 
 int gfxCharAt(float x, float y, const char* text, int style, float mouseX);
 

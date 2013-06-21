@@ -468,6 +468,16 @@ bool igContext::Tab(igIdent id, float x, float y, float width, float height, con
 	return (leftDown == false && hotItem == id && activeItem == id) || value;
 }
 
+void igContext::Label(float x, float y, float width, float height, const std::string& text, igTextAlign halign)
+{
+	int hint = 0;
+	if(halign == igTextAligns::LEFT)
+		hint = -1;
+	if(halign == igTextAligns::RIGHT)
+		hint = 1;
+	renderer->DrawLabel(GFX_STYLE_NONE, x, y, width, height, text, hint);
+}
+
 void igContext::BeginScrollArea( igIdent id, float x, float y, float width, float height, int& offset )
 {
 	currentMouseClipping.active = true;
@@ -596,6 +606,26 @@ void igContext::Space( int width )
 		scrollArea.currX += width + marginX;
 }
 
+void igContext::Label( const std::string& text, igTextAlign halign, int width)
+{
+	const int marginX = 5;
+	const int height = 30;
+	const int x = scrollArea.currX;
+	const int y = scrollArea.currY+marginY;
+
+	bool maxSize = width == 0;
+
+	if(maxSize)
+		width = scrollArea.width - (scrollArea.currX-scrollArea.startX) - marginX;
+
+	Label(x, y, width, height, text, halign);
+
+	if(maxSize)
+		NewLine();
+	else 
+		scrollArea.currX += width + marginX;
+}
+
 const int indentSize = 20;
 
 void igContext::Indent()
@@ -645,4 +675,5 @@ void igContext::ArrowRightDown()
 		textCharPos2 = textCharPos;
 	}
 }
+
 

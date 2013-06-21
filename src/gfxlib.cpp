@@ -76,7 +76,7 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style, bo
 	gWindow->draw(rightBorder);
 }
 
-void gfxPrint(float x, float y, const char* str, int style, int pipePos, int pipe2Pos)
+void gfxPrint(float x, float y, const char* str, int style, int pipePos, int pipe2Pos, int halign)
 {
 	const int charSize = 16;
 	const int pipeSize = 12;
@@ -85,7 +85,7 @@ void gfxPrint(float x, float y, const char* str, int style, int pipePos, int pip
 	sf::FloatRect r = text.getLocalBounds();
 	sf::Vector2f pos = sf::Vector2f(x - (r.left+r.width)/2.0f, y - text.getCharacterSize()/2.0f);
 	pos = sf::Vector2f((int)pos.x, (int)pos.y);
-	text.setPosition(pos);
+	text.setPosition(pos - sf::Vector2f(r.width/2.0f*halign,0));
 	text.setColor(textColor);
 
 	if(pipePos != -1)

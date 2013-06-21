@@ -23,6 +23,8 @@ public:
 	virtual void DrawTextBox(int state, int style, float x, float y,
 							float width, float height, const std::string& value,
 							int textCharPos, int textCharPos2);
+	virtual void DrawLabel(int state, float x, float y,
+							float width, float height, const std::string& value, int halign);
 
 	virtual void DrawDrag(int state, int style, float x, float y,
 							float width, float height, const char* title);

@@ -23,6 +23,18 @@ namespace igItemStates
 
 typedef igItemStates::eItemState igItemState;
 
+namespace igTextAligns
+{
+	enum eTextAlign
+	{
+		LEFT,
+		RIGHT,
+		CENTER
+	};
+}
+
+typedef igTextAligns::eTextAlign igTextAlign;
+
 typedef bool (*igAcceptDrop)(void* ptr);
 
 static bool igAlwaysAcceptDrop(void* ptr)
@@ -124,7 +136,7 @@ public:
 	igDraggable* Drag(igIdent id, float x, float y, float width, float height, const char* title, igDraggable* userData, igAcceptDrop fun=igNeverAcceptDrop);
 	bool Move(igIdent id, float& x, float& y, float width, float height, const char* title);
 	bool Tab(igIdent id, float x, float y, float width, float height, const char* title, bool value);
-
+	void Label(float x, float y, float width, float height, const std::string& text, igTextAlign valign = igTextAligns::CENTER);
 	// Scroll area
 
 	void BeginScrollArea(igIdent id, float x, float y, float width, float height, int& offset);
@@ -140,6 +152,7 @@ public:
 	bool Checkbox(igIdent id, bool value, const char* title);
 	bool TextBox(igIdent id, std::string& value, int width=0);
 	void Space(int width);
+	void Label(const std::string& text, igTextAlign halign=igTextAligns::CENTER, int width=0);
 
 	template <class R>
 	R* Drag(igIdent id, const char* title, igDraggable& userData, igAcceptDrop fun=igAlwaysAcceptDrop, int width=0)

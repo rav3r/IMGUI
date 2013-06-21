@@ -84,6 +84,12 @@ void igRenderer::DrawTextBox( int state, int style, float x, float y, float widt
 	gfxPrint(x + width/2.0f, y + height/2.0f, value.c_str(), GFX_STYLE_NONE, pipePos, pipe2Pos); 
 }
 
+
+void igRenderer::DrawLabel( int state, float x, float y, float width, float height, const std::string& value, int halign )
+{
+	gfxPrint(x + width/2.0f+width/2.0f*halign, y + height/2.0f, value.c_str(), GFX_STYLE_NONE, -1, -1, halign); 
+}
+
 void igRenderer::DrawDrag( int state, int style, float x, float y, float width, float height, const char* title )
 {
 	// draw button
@@ -144,3 +150,4 @@ void igRenderer::DrawSeparator( float x, float y, float width, float height )
 {
 	gfxDrawRectangle(x+5, y, width - 10, height, GFX_STYLE_NONE);
 }
+

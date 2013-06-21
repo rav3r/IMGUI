@@ -233,6 +233,8 @@ int main()
 		static int rightScrollbarOffset = 0;
 		gui.BeginScrollArea(GEN_NULL_ID, size.x - 230, 10, 220, size.y-20, rightScrollbarOffset);
 
+		gui.Label("Hierarchy");
+		gui.Separator();
 		if(gui.Button(GEN_NULL_ID, "Add node").onClicked)
 		{
 			id++;
