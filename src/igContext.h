@@ -92,6 +92,7 @@ public:
 	bool ctrlV;
 	bool ctrlX;
 	bool ctrlC;
+	bool ctrlA;
 
 	int textCharPos;
 	int textCharPos2;

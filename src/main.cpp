@@ -183,6 +183,8 @@ int main()
 						gui.ctrlX = true;
 					if(event.key.code == sf::Keyboard::V)
 						gui.ctrlV = true;
+					if(event.key.code == sf::Keyboard::A)
+						gui.ctrlA = true;
 				}
 			}
 		}

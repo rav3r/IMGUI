@@ -34,6 +34,7 @@ igContext::igContext(igRenderer* rend):
 	ctrlC = false;
 	ctrlX = false;
 	ctrlV = false;
+	ctrlA = false;
 }
 
 bool igContext::MouseInside(float x, float y, float width, float height)
@@ -106,6 +107,7 @@ void igContext::End()
 	ctrlC = false;
 	ctrlX = false;
 	ctrlV = false;
+	ctrlA = false;
 }
 
 bool igContext::LeftJustUp()
@@ -340,6 +342,12 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 
 			value = value.substr(0, textPos1) + allowedChars + value.substr(textPos1);
 			textCharPos2 = textCharPos = textPos1 + allowedChars.size();
+		}
+
+		if(ctrlA)
+		{
+			textCharPos = 0;
+			textCharPos2 = value.size();
 		}
 	}
 
