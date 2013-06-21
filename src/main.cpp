@@ -2,7 +2,6 @@
 #include <sstream>
 #include <SFML/Graphics.hpp>
 
-#include "gfxlib.h"
 #include "igRenderer.h"
 
 #include "IMGUI.h"
@@ -93,7 +92,7 @@ public:
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!");
+	sf::RenderWindow window(sf::VideoMode(1024, 768), "SFML works!");
 	sf::View view;
 	gWindow = &window;
 
@@ -197,7 +196,7 @@ int main()
 		gui.Begin();
 
 		static int leftScrollbarOffset = 0;
-		gui.BeginScrollArea(GEN_NULL_ID, 10, 100, 220, size.y-200, leftScrollbarOffset);
+		gui.BeginScrollArea(GEN_NULL_ID, size.x - 480, 10, 220, size.y-20, leftScrollbarOffset);
 
 		gui.Button(GEN_NULL_ID, "Button 1");
 		gui.Button(GEN_NULL_ID, "Button 2");
@@ -234,14 +233,14 @@ int main()
 		static int rightScrollbarOffset = 0;
 		gui.BeginScrollArea(GEN_NULL_ID, size.x - 230, 10, 220, size.y-20, rightScrollbarOffset);
 
-		root->DoGUI(gui);
-
-		gui.Separator();
 		if(gui.Button(GEN_NULL_ID, "Add node").onClicked)
 		{
 			id++;
 			root->AddChild(new DragTreeNode("Node nr "+IntToStr(id)));
 		}
+		gui.Separator();
+
+		root->DoGUI(gui);
 
 		gui.EndScrollArea(false);
 
