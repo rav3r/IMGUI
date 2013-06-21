@@ -59,6 +59,13 @@ void igRenderer::DrawHScrollbar( int state, int style, float x, float y, float w
 	gfxDrawRectangle(x+value*width, y+margin, thumbSize, height-margin*2.0f, GFX_STYLE_SLIDER_THUMB, false);
 }
 
+void igRenderer::DrawHSlider( float x, float y, float width, float height, float value )
+{
+	gfxDrawRectangle(x, y+height/4.0f, width, height/2.0f, GFX_STYLE_SLIDER_BG, false);
+	gfxDrawRectangle(x+value*width-igSizing::SLIDER_THUMB_SIZE/2.0f, y, igSizing::SLIDER_THUMB_SIZE, height, GFX_STYLE_SLIDER_THUMB, false);
+}
+
+
 void igRenderer::DrawTextBox( int state, int style, float x, float y, float width, float height, const std::string& value, int textCharPos, int textCharPos2)
 {
 	// draw text box

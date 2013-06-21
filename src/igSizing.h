@@ -26,6 +26,10 @@ namespace igSizing
 	// separator
 	extern const int SEPARATOR_HEIGHT;
 	extern const int SEPARATOR_SIZE;
+
+	// slider
+	extern const int SLIDER_THUMB_SIZE;
+
 	// textbox
 	extern const int TEXTBOX_HEIGHT;
 }

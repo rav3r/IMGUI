@@ -20,6 +20,8 @@ public:
 	virtual void DrawHScrollbar(int state, int style, float x, float y,
 							float width, float height, float aspect, const float& value);
 
+	virtual void DrawHSlider(float x, float y, float width, float height, float value);
+
 	virtual void DrawTextBox(int state, int style, float x, float y,
 							float width, float height, const std::string& value,
 							int textCharPos, int textCharPos2);

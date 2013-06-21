@@ -1,8 +1,9 @@
 EnterText - tekst zatwierdzany enterem
-zrobiæ slider
-ctrl+a na kontrolce z tekstem 
+Rysowanie kontrolek przez usera
 
 + Label, left, centered
 + scroll ma byæ rysowany zawsze z prawej
 + Slider na scroll area ma byæ widoczny zawsze
 + Zmienic nazwe z Slider na scroll
++ ctrl+a na kontrolce z tekstem
++ zrobiæ slider

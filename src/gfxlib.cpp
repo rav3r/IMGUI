@@ -18,6 +18,7 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style, bo
 	sf::RectangleShape shape(sf::Vector2f(width, height));
 	shape.setPosition(sf::Vector2f(x, y));
 
+	border= false;
 	if(border)
 	{
 		shape.setSize(sf::Vector2f(width-2, height-2));

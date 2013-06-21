@@ -26,6 +26,9 @@ namespace igSizing
 	const int SEPARATOR_HEIGHT			= 16;
 	const int SEPARATOR_SIZE			= 2;
 
+	// slider
+	const int SLIDER_THUMB_SIZE			= 6;
+
 	// textbox
 	const int TEXTBOX_HEIGHT			= 24;
 }

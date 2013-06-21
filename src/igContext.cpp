@@ -487,6 +487,32 @@ void igContext::Label(float x, float y, float width, float height, const std::st
 	renderer->DrawLabel(GFX_STYLE_NONE, x, y, width, height, text, hint);
 }
 
+bool igContext::HSlider( igIdent id, float x, float y, float width, float height, float& value )
+{
+	float prevValue = value;
+
+	if(MouseInside(x, y, width, height))
+	{
+		hotItem = id;
+		if(leftDown && activeItem == nullId)
+		{
+			activeItem = id;
+		}
+	}
+
+	if(leftDown && activeItem == id)
+	{
+		value = (mouseX - x)/width;
+
+		if(value < 0) value = 0;
+		if(value > 1.0f) value = 1.0f;
+	}
+
+	renderer->DrawHSlider(x, y, width, height, value);
+
+	return prevValue != value;
+}
+
 void igContext::BeginScrollArea( igIdent id, float x, float y, float width, float height, int& offset )
 {
 	currentMouseClipping.active = true;
@@ -627,6 +653,29 @@ void igContext::Label( const std::string& text, igTextAlign halign, int width)
 		NewLine(LABEL_HEIGHT + SCROLLAREA_MARGIN_Y);
 	else 
 		scrollArea.currX += width + SCROLLAREA_MARGIN_X;
+}
+
+bool igContext::Slider( igIdent id, float& value, float minVal, float maxVal, int width/*=0*/ )
+{
+	const int x = scrollArea.currX + SLIDER_THUMB_SIZE/2.0f;
+	const int y = scrollArea.currY+SCROLLAREA_MARGIN_Y;
+
+	bool maxSize = width == 0;
+
+	if(maxSize)
+	{
+		int currXPos = scrollArea.currX-scrollArea.startX;
+		width = scrollArea.width - currXPos - SCROLLAREA_MARGIN_X - SCROLLBAR_WIDTH - SLIDER_THUMB_SIZE;
+	}
+
+	bool result = HSlider(id, x, y, width, 20, value);
+
+	if(maxSize)
+		NewLine(LABEL_HEIGHT + SCROLLAREA_MARGIN_Y);
+	else 
+		scrollArea.currX += width + SCROLLAREA_MARGIN_X;
+
+	return result;
 }
 
 const int indentSize = 20;

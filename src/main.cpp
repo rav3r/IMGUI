@@ -189,7 +189,8 @@ int main()
 			}
 		}
 
-		window.clear(sf::Color(0, 0, 0, 255));
+		static sf::Color bgColor(0,0,0,255);
+		window.clear(bgColor);
 
 		sf::Vector2u size = gWindow->getSize();
 		
@@ -202,6 +203,16 @@ int main()
 
 		gui.Button(GEN_NULL_ID, "Button 1");
 		gui.Button(GEN_NULL_ID, "Button 2");
+
+		float slidVal = bgColor.r/255.0f;
+		if(gui.Slider(GEN_NULL_ID, slidVal, 0, 1))
+			bgColor.r = slidVal*255.0f+0.5f;
+		slidVal = bgColor.g/255.0f;
+		if(gui.Slider(GEN_NULL_ID, slidVal, 0, 1))
+			bgColor.g = slidVal*255.0f+0.5f;
+		slidVal = bgColor.b/255.0f;
+		if(gui.Slider(GEN_NULL_ID, slidVal, 0, 1))
+			bgColor.b = slidVal*255.0f+0.5f;
 		if(gui.Checkbox(GEN_NULL_ID, checkboxValue, "checkbox"))
 			checkboxValue = !checkboxValue;
 		if(checkboxValue)
