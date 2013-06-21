@@ -85,7 +85,7 @@ public:
 			return;
 		//gui.Indent();
 		for(int i=0; i<children.size(); i++)
-			children[i]->DoGUI(gui, indent+16+marginX);
+			children[i]->DoGUI(gui, indent+16+igSizing::SCROLLAREA_MARGIN_X);
 		//gui.Unindent();
 	}
 };
@@ -196,7 +196,7 @@ int main()
 		gui.Begin();
 
 		static int leftScrollbarOffset = 0;
-		gui.BeginScrollArea(GEN_NULL_ID, size.x - 480, 10, 220, size.y-20, leftScrollbarOffset);
+		gui.BeginScrollArea(GEN_NULL_ID, size.x - 250, 0, 250, size.y, leftScrollbarOffset);
 
 		gui.Button(GEN_NULL_ID, "Button 1");
 		gui.Button(GEN_NULL_ID, "Button 2");
@@ -228,12 +228,12 @@ int main()
 			}
 		}
 
-		gui.EndScrollArea(true);
+		gui.EndScrollArea();
 
 		static int rightScrollbarOffset = 0;
-		gui.BeginScrollArea(GEN_NULL_ID, size.x - 230, 10, 220, size.y-20, rightScrollbarOffset);
+		gui.BeginScrollArea(GEN_NULL_ID, size.x - 500, 0, 250, size.y, rightScrollbarOffset);
 
-		gui.Label("Hierarchy");
+		gui.Label("Hierarchy", igTextAlign::CENTER);
 		gui.Separator();
 		if(gui.Button(GEN_NULL_ID, "Add node").onClicked)
 		{
@@ -244,7 +244,7 @@ int main()
 
 		root->DoGUI(gui);
 
-		gui.EndScrollArea(false);
+		gui.EndScrollArea();
 
 		gui.End();
 

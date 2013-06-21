@@ -40,7 +40,7 @@ void igRenderer::DrawCheckbox( int state, int style, float x, float y, float wid
 	}
 }
 
-void igRenderer::DrawVSlider( int state, int style, float x, float y, float width, float height, float aspect, const float& value )
+void igRenderer::DrawVScrollbar( int state, int style, float x, float y, float width, float height, float aspect, const float& value )
 {
 	// draw vertical slider
 	const float margin = 0.0f;
@@ -50,7 +50,7 @@ void igRenderer::DrawVSlider( int state, int style, float x, float y, float widt
 	gfxDrawRectangle(x+margin, y+value*height, width-margin*2, thumbSize, GFX_STYLE_SLIDER_THUMB, false);
 }
 
-void igRenderer::DrawHSlider( int state, int style, float x, float y, float width, float height, float aspect, const float& value )
+void igRenderer::DrawHScrollbar( int state, int style, float x, float y, float width, float height, float aspect, const float& value )
 {
 	const float margin = 0.0f;
 	float thumbSize = width * aspect;

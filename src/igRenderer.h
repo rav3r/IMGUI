@@ -14,10 +14,10 @@ public:
 	virtual void DrawCheckbox(int state, int style, float x, float y,
 							float width, float height, bool value);
 
-	virtual void DrawVSlider(int state, int style, float x, float y,
+	virtual void DrawVScrollbar(int state, int style, float x, float y,
 							float width, float height, float aspect, const float& value);
 
-	virtual void DrawHSlider(int state, int style, float x, float y,
+	virtual void DrawHScrollbar(int state, int style, float x, float y,
 							float width, float height, float aspect, const float& value);
 
 	virtual void DrawTextBox(int state, int style, float x, float y,

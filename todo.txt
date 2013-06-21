@@ -1,6 +1,8 @@
 EnterText - tekst zatwierdzany enterem
-+ Label, left, centered
-Slider na scroll area ma byæ widoczny zawsze
-Zmienic nazwe z Slider na scroll i zrobiæ slider
-scroll ma byæ rysowany zawsze z prawej
+zrobiæ slider
 ctrl+a na kontrolce z tekstem 
+
++ Label, left, centered
++ scroll ma byæ rysowany zawsze z prawej
++ Slider na scroll area ma byæ widoczny zawsze
++ Zmienic nazwe z Slider na scroll

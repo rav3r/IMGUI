@@ -5,6 +5,7 @@
 #include "igIdent.h"
 #include "igRect.h"
 #include "igRenderer.h"
+#include "igSizing.h"
 
 #include <string>
 
@@ -52,11 +53,6 @@ class igDraggable
 public:
 	virtual ~igDraggable() {}
 };
-
-// todo: rename
-const int newLineSize = 34;
-const int marginY = 2;
-const int marginX = 5;
 
 class igContext
 {
@@ -130,8 +126,8 @@ public:
     
 	igButton Button(igIdent id, float x, float y, float width, float height, const char* title);
 	bool Checkbox(igIdent id, float x, float y, float width, float height, bool value);
-	bool VSlider(igIdent id, float x, float y, float width, float height, float aspect, float& value);
-	bool HSlider(igIdent id, float x, float y, float width, float height, float aspect, float& value);
+	bool VScrollbar(igIdent id, float x, float y, float width, float height, float aspect, float& value);
+	bool HScrollbar(igIdent id, float x, float y, float width, float height, float aspect, float& value);
 	bool TextBox(igIdent id, float x, float y, float width, float height, std::string& value, const std::string& charset=DEFAULT_CHARSET);
 	igDraggable* Drag(igIdent id, float x, float y, float width, float height, const char* title, igDraggable* userData, igAcceptDrop fun=igNeverAcceptDrop);
 	bool Move(igIdent id, float& x, float& y, float width, float height, const char* title);
@@ -140,9 +136,9 @@ public:
 	// Scroll area
 
 	void BeginScrollArea(igIdent id, float x, float y, float width, float height, int& offset);
-	void EndScrollArea(bool scrollbarRight);
+	void EndScrollArea();
 
-	void NewLine();
+	void NewLine(int newLineSize);
 
 	void Indent();
 	void Unindent();
@@ -157,26 +153,27 @@ public:
 	template <class R>
 	R* Drag(igIdent id, const char* title, igDraggable& userData, igAcceptDrop fun=igAlwaysAcceptDrop, int width=0)
 	{
-		const int marginX = 5;
-		const int height = 30;
 		const int x = scrollArea.currX;
 		const int y = scrollArea.currY;
 		
 		bool maxSize = width == 0;
 
 		if(maxSize)
-			width = scrollArea.width - (scrollArea.currX-scrollArea.startX) - marginX;
+		{
+			int currXPos = scrollArea.currX-scrollArea.startX;
+			width = scrollArea.width - currXPos - igSizing::SCROLLAREA_MARGIN_X - igSizing::SCROLLBAR_WIDTH;
+		}
 
-		if(MouseInside(x, y, width, height) && dragPointer!=&userData &&
+		if(MouseInside(x, y, width, igSizing::DRAG_HEIGHT) && dragPointer!=&userData &&
 			dynamic_cast<R*>(dragPointer)!=0)
 			canDrop = true;
 
-		igDraggable* result = Drag(id, x, y, width, height, title, &userData, fun);
+		igDraggable* result = Drag(id, x, y, width, igSizing::DRAG_HEIGHT, title, &userData, fun);
 
 		if(maxSize)
-			NewLine();
+			NewLine(igSizing::DRAG_HEIGHT + igSizing::SCROLLAREA_MARGIN_Y);
 		else 
-			scrollArea.currX += width + marginX;
+			scrollArea.currX += width + igSizing::SCROLLAREA_MARGIN_X;
 
 		return dynamic_cast<R*>(result);
 	}

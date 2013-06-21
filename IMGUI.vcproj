@@ -208,6 +208,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\src\igSizing.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\src\igSizing.h"
+			>
+		</File>
+		<File
 			RelativePath=".\src\IMGUI.h"
 			>
 		</File>
