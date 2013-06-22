@@ -1,7 +1,7 @@
-Rysowanie kontrolek przez usera
-Opakowanie na flota (¿eby mo¿na by³o edytowaæ)
-Zwyk³a area bez suwaka (ale z obwódk¹)
 Umo¿liwiæ coœ typu pushButton (mo¿e to checkbox?)
+Tab, i shift+tab support dla text boxów
+Rysowanie kontrolek przez usera
+Posprz¹taæ kod
 
 + Label, left, centered
 + scroll ma byæ rysowany zawsze z prawej
@@ -10,3 +10,5 @@ Umo¿liwiæ coœ typu pushButton (mo¿e to checkbox?)
 + ctrl+a na kontrolce z tekstem
 + zrobiæ slider
 + Robienie entera (newline) na max wysokoœci.
+- Opakowanie na flota (¿eby mo¿na by³o edytowaæ)
++ Zwyk³a area bez suwaka (ale z obwódk¹)

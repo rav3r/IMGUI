@@ -513,7 +513,7 @@ bool igContext::HSlider( igIdent id, float x, float y, float width, float height
 	return prevValue != value;
 }
 
-void igContext::BeginScrollArea( igIdent id, float x, float y, float width, float height, int& offset )
+void igContext::BeginScrollArea( igIdent id, float x, float y, float width, float height, int& offset, bool scrollbar, igColor color )
 {
 	currentMouseClipping.active = true;
 	currentMouseClipping.x = x;			currentMouseClipping.y = y;
@@ -526,10 +526,11 @@ void igContext::BeginScrollArea( igIdent id, float x, float y, float width, floa
 	scrollArea.offset = &offset;
 	scrollArea.indent = 0;
 	scrollArea.currMaxHeight = 0;
+	scrollArea.scrollbar = scrollbar ? 1 : 0;
 
 	scrollArea.currY = y - *scrollArea.offset;
 
-	renderer->DrawScrollArea(GFX_STYLE_SCROLL_AREA, x, y, width, height);
+	renderer->DrawScrollArea(GFX_STYLE_SCROLL_AREA, x, y, width, height, color);
 
 	gfxScissor(x, y, width, height);
 }
@@ -542,23 +543,26 @@ void igContext::EndScrollArea()
 	float aspect = scrollArea.height/totalSize;
 	float curr = *scrollArea.offset/totalSize;
 
-	float posX = scrollArea.startX + scrollArea.width - SCROLLBAR_WIDTH;
-
-	float value = *scrollArea.offset/totalSize;
-
-	float newAspect = aspect;
-	if(aspect > 1) newAspect = 1;
-	VScrollbar(scrollArea.id, posX, scrollArea.startY, SCROLLBAR_WIDTH, scrollArea.height, newAspect, value);
-	*scrollArea.offset = value * totalSize+0.5f;
-	if(MouseInside(scrollArea.startX, scrollArea.startY, scrollArea.width, scrollArea.height))
-		*scrollArea.offset -= mouseWheel*30;
-	if(aspect >= 1.0f)
+	if(scrollArea.scrollbar != 0)
 	{
-		*scrollArea.offset = 0;
+		float posX = scrollArea.startX + scrollArea.width - SCROLLBAR_WIDTH;
+
+		float value = *scrollArea.offset/totalSize;
+		
+		float newAspect = aspect;
+		if(aspect > 1) newAspect = 1;
+		VScrollbar(scrollArea.id, posX, scrollArea.startY, SCROLLBAR_WIDTH, scrollArea.height, newAspect, value);
+		*scrollArea.offset = value * totalSize+0.5f;
+		if(MouseInside(scrollArea.startX, scrollArea.startY, scrollArea.width, scrollArea.height))
+			*scrollArea.offset -= mouseWheel*30;
+		if(aspect >= 1.0f)
+		{
+			*scrollArea.offset = 0;
+		}
+		if(*scrollArea.offset > totalSize - scrollArea.height)
+			*scrollArea.offset = totalSize - scrollArea.height;
+		if(*scrollArea.offset < 0) *scrollArea.offset = 0;
 	}
-	if(*scrollArea.offset > totalSize - scrollArea.height)
-		*scrollArea.offset = totalSize - scrollArea.height;
-	if(*scrollArea.offset < 0) *scrollArea.offset = 0;
 }
 
 void igContext::AdjustNewScrollAreaHeight( int height )
@@ -584,7 +588,7 @@ igButton igContext::Button( igIdent id, const char* title, int width )
 	if(maxSize)
 	{
 		int currXPos = scrollArea.currX-scrollArea.startX;
-		width = scrollArea.width - currXPos - SCROLLAREA_MARGIN_X - SCROLLBAR_WIDTH;
+		width = scrollArea.width - currXPos - SCROLLAREA_MARGIN_X - SCROLLBAR_WIDTH*scrollArea.scrollbar;
 	}
 
 	igButton button = Button(id, x, y, width, BUTTON_HEIGHT, title);
@@ -621,7 +625,7 @@ bool igContext::TextBox( igIdent id, std::string& value, int width )
 	if(maxSize)
 	{
 		int currXPos = scrollArea.currX-scrollArea.startX;
-		width = scrollArea.width - currXPos - SCROLLAREA_MARGIN_X - SCROLLBAR_WIDTH;
+		width = scrollArea.width - currXPos - SCROLLAREA_MARGIN_X - SCROLLBAR_WIDTH*scrollArea.scrollbar;
 	}
 
 	bool result = TextBox(id, x, y, width, TEXTBOX_HEIGHT, value);
@@ -654,7 +658,7 @@ void igContext::Label( const std::string& text, igTextAlign halign, int width)
 	if(maxSize)
 	{
 		int currXPos = scrollArea.currX-scrollArea.startX;
-		width = scrollArea.width - currXPos - SCROLLAREA_MARGIN_X - SCROLLBAR_WIDTH;
+		width = scrollArea.width - currXPos - SCROLLAREA_MARGIN_X - SCROLLBAR_WIDTH*scrollArea.scrollbar;
 	}
 
 	Label(x, y, width, LABEL_HEIGHT, text, halign);
@@ -677,7 +681,7 @@ bool igContext::Slider( igIdent id, float& value, float minVal, float maxVal, in
 	if(maxSize)
 	{
 		int currXPos = scrollArea.currX-scrollArea.startX;
-		width = scrollArea.width - currXPos - SCROLLAREA_MARGIN_X - SCROLLBAR_WIDTH - SLIDER_THUMB_SIZE;
+		width = scrollArea.width - currXPos - SCROLLAREA_MARGIN_X - SCROLLBAR_WIDTH*scrollArea.scrollbar - SLIDER_THUMB_SIZE;
 	}
 
 	bool result = HSlider(id, x, y, width, 20, value);
@@ -709,7 +713,7 @@ void igContext::Unindent()
 void igContext::Separator()
 {
 	float y = scrollArea.currY + SCROLLAREA_MARGIN_Y + SEPARATOR_HEIGHT/2 - SEPARATOR_SIZE/2;
-	renderer->DrawSeparator(scrollArea.startX, y, scrollArea.width - SCROLLBAR_WIDTH, SEPARATOR_SIZE);
+	renderer->DrawSeparator(scrollArea.startX, y, scrollArea.width - SCROLLBAR_WIDTH*scrollArea.scrollbar, SEPARATOR_SIZE);
 	AdjustNewScrollAreaHeight(SEPARATOR_HEIGHT);
 	NewLine();
 }

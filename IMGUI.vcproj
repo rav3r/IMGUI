@@ -180,6 +180,10 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath=".\src\igColor.h"
+			>
+		</File>
+		<File
 			RelativePath=".\src\igContext.cpp"
 			>
 		</File>

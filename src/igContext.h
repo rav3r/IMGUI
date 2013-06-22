@@ -1,6 +1,7 @@
 #ifndef __IGCONTEXT_H__
 #define __IGCONTEXT_H__
 
+#include "igColor.h"
 #include "igEvents.h"
 #include "igIdent.h"
 #include "igRect.h"
@@ -75,6 +76,7 @@ private:
 		int currMaxHeight;
 		igIdent id;
 		int* offset;
+		int scrollbar;
 	} scrollArea;
 
 	void AdjustNewScrollAreaHeight(int height);
@@ -141,7 +143,7 @@ public:
 
 	// Scroll area
 
-	void BeginScrollArea(igIdent id, float x, float y, float width, float height, int& offset);
+	void BeginScrollArea(igIdent id, float x, float y, float width, float height, int& offset, bool scrollbar=true, igColor color=igColor(0.5f, 0.5f, 0.5f));
 	void EndScrollArea();
 
 	void NewLine();
@@ -168,7 +170,7 @@ public:
 		if(maxSize)
 		{
 			int currXPos = scrollArea.currX-scrollArea.startX;
-			width = scrollArea.width - currXPos - igSizing::SCROLLAREA_MARGIN_X - igSizing::SCROLLBAR_WIDTH;
+			width = scrollArea.width - currXPos - igSizing::SCROLLAREA_MARGIN_X - igSizing::SCROLLBAR_WIDTH*scrollArea.scrollbar;
 		}
 
 		if(MouseInside(x, y, width, igSizing::DRAG_HEIGHT) && dragPointer!=&userData &&

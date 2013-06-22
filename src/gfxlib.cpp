@@ -13,7 +13,7 @@ static sf::Color hoverElemColor(70,113,213,255);
 static sf::Color checkboxColor(255, 255, 255, 255);
 static sf::Color borderColor(6,38,111,255);
 
-void gfxDrawRectangle(float x, float y, float width, float height, int style, bool border)
+void gfxDrawRectangle(float x, float y, float width, float height, int style, bool border, float r, float g, float b)
 {
 	sf::RectangleShape shape(sf::Vector2f(width, height));
 	shape.setPosition(sf::Vector2f(x, y));
@@ -47,6 +47,9 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style, bo
 		shape.setFillColor(sf::Color(0, 0, 255));
 	else
 		shape.setFillColor(checkboxColor);
+
+	if(r >= 0)
+		shape.setFillColor(sf::Color(r*255, g*255, b*255));
 	    
 	gWindow->draw(shape);
 

@@ -202,8 +202,10 @@ int main()
 		gui.Begin();
 
 		static int leftScrollbarOffset = 0;
-		gui.BeginScrollArea(GEN_NULL_ID, size.x - 250, 0, 250, size.y, leftScrollbarOffset);
+		gui.BeginScrollArea(GEN_NULL_ID, size.x - 250, 0, 250, size.y, leftScrollbarOffset, true, igColor(70/255.0f, 70/255.0f, 70/255.0f));
 
+		gui.Label("Properties", igTextAlign::CENTER);
+		gui.Separator();
 		gui.Button(GEN_NULL_ID, "Button 1");
 		gui.Button(GEN_NULL_ID, "Button 2");
 
@@ -257,7 +259,7 @@ int main()
 		gui.EndScrollArea();
 
 		static int rightScrollbarOffset = 0;
-		gui.BeginScrollArea(GEN_NULL_ID, size.x - 500, 0, 250, size.y, rightScrollbarOffset);
+		gui.BeginScrollArea(GEN_NULL_ID, size.x - 500, 0, 250, size.y, rightScrollbarOffset, true,igColor(70/255.0f, 70/255.0f, 70/255.0f));
 
 		gui.Label("Hierarchy", igTextAlign::CENTER);
 		gui.Separator();

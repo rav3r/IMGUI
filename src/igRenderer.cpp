@@ -148,9 +148,9 @@ void igRenderer::DrawTab( int state, int style, float x, float y, float width, f
 
 }
 
-void igRenderer::DrawScrollArea(int style, float x, float y, float width, float height)
+void igRenderer::DrawScrollArea(int style, float x, float y, float width, float height, igColor color)
 {
-	gfxDrawRectangle(x, y, width, height, style, false);
+	gfxDrawRectangle(x, y, width, height, style, false, color.r, color.g, color.b);
 }
 
 void igRenderer::DrawSeparator( float x, float y, float width, float height )

@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "igColor.h"
+
 class igRenderer
 {
 public:
@@ -37,7 +39,7 @@ public:
 	virtual void DrawTab(int state, int style, float x, float y,
 							float width, float height, const char* title, bool value);
 
-	virtual void DrawScrollArea(int style, float x, float y, float width, float height);
+	virtual void DrawScrollArea(int style, float x, float y, float width, float height, igColor color);
 	
 	virtual void DrawSeparator(float x, float y, float width, float height);
 };
