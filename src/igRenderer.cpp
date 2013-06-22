@@ -21,7 +21,7 @@ void igRenderer::DrawButton( int state, int style, float x, float y, float width
 
 void igRenderer::DrawCheckbox( int state, int style, float x, float y, float width, float height, bool value )
 {
-	const float margin = 3.0f;
+	const float margin = 5.0f;
 
 	if(state & igItemStates::PRESSED)
 	{

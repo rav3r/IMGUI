@@ -72,9 +72,12 @@ private:
 		int currX, currY;
 		int width, height;
 		int indent;
+		int currMaxHeight;
 		igIdent id;
 		int* offset;
 	} scrollArea;
+
+	void AdjustNewScrollAreaHeight(int height);
 public:
 	float mouseX;
 	float mouseY;
@@ -141,7 +144,7 @@ public:
 	void BeginScrollArea(igIdent id, float x, float y, float width, float height, int& offset);
 	void EndScrollArea();
 
-	void NewLine(int newLineSize);
+	void NewLine();
 
 	void Indent();
 	void Unindent();
@@ -175,8 +178,10 @@ public:
 		igDraggable* result = Drag(id, x, y, width, igSizing::DRAG_HEIGHT, title, &userData, fun);
 
 		if(maxSize)
-			NewLine(igSizing::DRAG_HEIGHT + igSizing::SCROLLAREA_MARGIN_Y);
-		else 
+		{
+			AdjustNewScrollAreaHeight(igSizing::DRAG_HEIGHT);
+			NewLine();
+		} else 
 			scrollArea.currX += width + igSizing::SCROLLAREA_MARGIN_X;
 
 		return dynamic_cast<R*>(result);

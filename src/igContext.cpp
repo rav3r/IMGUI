@@ -525,6 +525,7 @@ void igContext::BeginScrollArea( igIdent id, float x, float y, float width, floa
 	scrollArea.id = id;
 	scrollArea.offset = &offset;
 	scrollArea.indent = 0;
+	scrollArea.currMaxHeight = 0;
 
 	scrollArea.currY = y - *scrollArea.offset;
 
@@ -560,12 +561,17 @@ void igContext::EndScrollArea()
 	if(*scrollArea.offset < 0) *scrollArea.offset = 0;
 }
 
-
-
-void igContext::NewLine(int newLineSize)
+void igContext::AdjustNewScrollAreaHeight( int height )
 {
-	scrollArea.currY += newLineSize;
+	if(scrollArea.currMaxHeight < height)
+		scrollArea.currMaxHeight = height;
+}
+
+void igContext::NewLine()
+{
+	scrollArea.currY += scrollArea.currMaxHeight + SCROLLAREA_MARGIN_Y;
 	scrollArea.currX = scrollArea.startX + SCROLLAREA_MARGIN_X + scrollArea.indent;
+	scrollArea.currMaxHeight = 0;
 }
 
 igButton igContext::Button( igIdent id, const char* title, int width )
@@ -583,8 +589,10 @@ igButton igContext::Button( igIdent id, const char* title, int width )
 
 	igButton button = Button(id, x, y, width, BUTTON_HEIGHT, title);
 
+	AdjustNewScrollAreaHeight(BUTTON_HEIGHT);
+
 	if(maxSize)
-		NewLine(BUTTON_HEIGHT+SCROLLAREA_MARGIN_Y);
+		NewLine();
 	else 
 		scrollArea.currX += width + SCROLLAREA_MARGIN_X;
 
@@ -618,8 +626,10 @@ bool igContext::TextBox( igIdent id, std::string& value, int width )
 
 	bool result = TextBox(id, x, y, width, TEXTBOX_HEIGHT, value);
 
+	AdjustNewScrollAreaHeight(TEXTBOX_HEIGHT);
+
 	if(maxSize)
-		NewLine(TEXTBOX_HEIGHT + SCROLLAREA_MARGIN_Y);
+		NewLine();
 	else 
 		scrollArea.currX += width + SCROLLAREA_MARGIN_X;
 
@@ -629,7 +639,7 @@ bool igContext::TextBox( igIdent id, std::string& value, int width )
 void igContext::Space( int width )
 {
 	if(width == 0)
-		NewLine(30);
+		NewLine();
 	else
 		scrollArea.currX += width + SCROLLAREA_MARGIN_X;
 }
@@ -649,8 +659,10 @@ void igContext::Label( const std::string& text, igTextAlign halign, int width)
 
 	Label(x, y, width, LABEL_HEIGHT, text, halign);
 
+	AdjustNewScrollAreaHeight(LABEL_HEIGHT);
+
 	if(maxSize)
-		NewLine(LABEL_HEIGHT + SCROLLAREA_MARGIN_Y);
+		NewLine();
 	else 
 		scrollArea.currX += width + SCROLLAREA_MARGIN_X;
 }
@@ -670,8 +682,10 @@ bool igContext::Slider( igIdent id, float& value, float minVal, float maxVal, in
 
 	bool result = HSlider(id, x, y, width, 20, value);
 
+	AdjustNewScrollAreaHeight(SLIDER_HEIGHT);
+
 	if(maxSize)
-		NewLine(LABEL_HEIGHT + SCROLLAREA_MARGIN_Y);
+		NewLine();
 	else 
 		scrollArea.currX += width + SCROLLAREA_MARGIN_X;
 
@@ -696,7 +710,8 @@ void igContext::Separator()
 {
 	float y = scrollArea.currY + SCROLLAREA_MARGIN_Y + SEPARATOR_HEIGHT/2 - SEPARATOR_SIZE/2;
 	renderer->DrawSeparator(scrollArea.startX, y, scrollArea.width - SCROLLBAR_WIDTH, SEPARATOR_SIZE);
-	NewLine(SEPARATOR_HEIGHT+SCROLLAREA_MARGIN_Y);
+	AdjustNewScrollAreaHeight(SEPARATOR_HEIGHT);
+	NewLine();
 }
 
 void igContext::ArrowLeftDown()
@@ -728,5 +743,4 @@ void igContext::ArrowRightDown()
 		textCharPos2 = textCharPos;
 	}
 }
-
 

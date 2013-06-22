@@ -29,6 +29,7 @@ namespace igSizing
 
 	// slider
 	extern const int SLIDER_THUMB_SIZE;
+	extern const int SLIDER_HEIGHT;
 
 	// textbox
 	extern const int TEXTBOX_HEIGHT;

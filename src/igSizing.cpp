@@ -16,7 +16,7 @@ namespace igSizing
 	const int LABEL_HEIGHT				= 24;
 
 	// scrollarea
-	const int SCROLLAREA_MARGIN_X		= 5;
+	const int SCROLLAREA_MARGIN_X		= 3;
 	const int SCROLLAREA_MARGIN_Y		= 2;
 
 	// scrollbar
@@ -28,7 +28,8 @@ namespace igSizing
 
 	// slider
 	const int SLIDER_THUMB_SIZE			= 6;
+	const int SLIDER_HEIGHT				= 24;
 
 	// textbox
-	const int TEXTBOX_HEIGHT			= 24;
+	const int TEXTBOX_HEIGHT			= 30;
 }

@@ -1,5 +1,7 @@
-EnterText - tekst zatwierdzany enterem
 Rysowanie kontrolek przez usera
+Opakowanie na flota (¿eby mo¿na by³o edytowaæ)
+Zwyk³a area bez suwaka (ale z obwódk¹)
+Umo¿liwiæ coœ typu pushButton (mo¿e to checkbox?)
 
 + Label, left, centered
 + scroll ma byæ rysowany zawsze z prawej
@@ -7,3 +9,4 @@ Rysowanie kontrolek przez usera
 + Zmienic nazwe z Slider na scroll
 + ctrl+a na kontrolce z tekstem
 + zrobiæ slider
++ Robienie entera (newline) na max wysokoœci.

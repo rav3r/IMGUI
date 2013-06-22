@@ -90,9 +90,11 @@ public:
 	}
 };
 
+#include "gfxlib.h"
+
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(1024, 768), "SFML works!");
+	sf::RenderWindow window(sf::VideoMode(1024, 768), "TermEdit");
 	sf::View view;
 	gWindow = &window;
 
@@ -127,11 +129,12 @@ int main()
 
 	DragTreeNode* root = new DragTreeNode("root");
 	int id=0;
+
+	float k = 1.23f;
 	
 	while (window.isOpen())
 	{
 		sf::Event event;
-		
 		for(int i=0; i<10 && window.pollEvent(event); i++)
 		{
 			gui.shift = event.key.shift;
@@ -203,6 +206,16 @@ int main()
 
 		gui.Button(GEN_NULL_ID, "Button 1");
 		gui.Button(GEN_NULL_ID, "Button 2");
+
+		std::stringstream bleh;
+		bleh << k;
+		std::string kk = bleh.str();
+
+		gui.TextBox(GEN_NULL_ID, kk);
+
+		bleh.str("");
+		bleh << kk;
+		bleh >> k;
 
 		float slidVal = bgColor.r/255.0f;
 		if(gui.Slider(GEN_NULL_ID, slidVal, 0, 1))
