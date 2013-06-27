@@ -1,11 +1,10 @@
 #ifndef __IGCONTEXT_H__
 #define __IGCONTEXT_H__
 
+#include "igWidget.h"
 #include "igColor.h"
-#include "igEvents.h"
 #include "igIdent.h"
 #include "igRect.h"
-#include "igRenderer.h"
 #include "igSizing.h"
 
 #include <string>
@@ -24,18 +23,6 @@ namespace igItemStates
 }
 
 typedef igItemStates::eItemState igItemState;
-
-namespace igTextAligns
-{
-	enum eTextAlign
-	{
-		LEFT,
-		RIGHT,
-		CENTER
-	};
-}
-
-typedef igTextAligns::eTextAlign igTextAlign;
 
 typedef bool (*igAcceptDrop)(void* ptr);
 
@@ -116,9 +103,7 @@ public:
 	bool dragMissing;
 	bool canDrop;
 
-	igRenderer* renderer;
-
-	igContext(igRenderer* rend);
+	igContext();
 
 	void ArrowLeftDown();
 	void ArrowRightDown();
@@ -128,39 +113,40 @@ public:
 	bool MouseClipped();
 
 	void Begin();
-	void End();
+	igDragged End();
     
-	igButton Button(igIdent id, float x, float y, float width, float height, const char* title);
-	bool Checkbox(igIdent id, float x, float y, float width, float height, bool value);
-	bool VScrollbar(igIdent id, float x, float y, float width, float height, float aspect, float& value);
-	bool HScrollbar(igIdent id, float x, float y, float width, float height, float aspect, float& value);
-	bool TextBox(igIdent id, float x, float y, float width, float height, std::string& value, const std::string& charset=DEFAULT_CHARSET);
-	igDraggable* Drag(igIdent id, float x, float y, float width, float height, const char* title, igDraggable* userData, igAcceptDrop fun=igNeverAcceptDrop);
-	bool Move(igIdent id, float& x, float& y, float width, float height, const char* title);
-	bool Tab(igIdent id, float x, float y, float width, float height, const char* title, bool value);
-	void Label(float x, float y, float width, float height, const std::string& text, igTextAlign valign = igTextAligns::CENTER);
-	bool HSlider(igIdent id, float x, float y, float width, float height, float& value);
+	igButton	Button(igIdent id, float x, float y, float width, float height, const char* title);
+	igCheckbox	Checkbox(igIdent id, float x, float y, float width, float height, bool value);
+	igTextbox	TextBox(igIdent id, float x, float y, float width, float height, std::string& value, const std::string& charset=DEFAULT_CHARSET);
+	igLabel		Label(float x, float y, float width, float height, const std::string& text, igTextAlign valign = igTextAligns::CENTER);
+	igSlider	HSlider(igIdent id, float x, float y, float width, float height, float& value);
+	igMove		Move(igIdent id, float& x, float& y, float width, float height, const char* title);
+	igVScroll	VScroll(igIdent id, float x, float y, float width, float height, float aspect, float& value);
 
-	// Scroll area
+	igDrag<igDraggable> Drag(igIdent id, float x, float y, float width, float height, const char* title, igDraggable* userData, igAcceptDrop fun=igNeverAcceptDrop);
 
-	void BeginScrollArea(igIdent id, float x, float y, float width, float height, int& offset, bool scrollbar=true, igColor color=igColor(0.5f, 0.5f, 0.5f));
-	void EndScrollArea();
+	// scroll area
+
+	igAreaBG BeginScrollArea(igIdent id, float x, float y, float width, float height, int& offset, bool scrollbar=true, igColor color=igColor(0.5f, 0.5f, 0.5f));
+	igAreaFG EndScrollArea();
 
 	void NewLine();
 
 	void Indent();
 	void Unindent();
-	void Separator();
-
-	igButton Button(igIdent id, const char* title, int width=0);
-	bool Checkbox(igIdent id, bool value, const char* title);
-	bool TextBox(igIdent id, std::string& value, int width=0);
 	void Space(int width);
-	void Label(const std::string& text, igTextAlign halign=igTextAligns::CENTER, int width=0);
-	bool Slider(igIdent id, float& val, float minVal, float maxVal, int width=0);
+
+	// widgets
+
+	igButton	Button(igIdent id, const char* title, int width=0);
+	igCheckbox	Checkbox(igIdent id, bool value, const char* title);
+	igLabel		Label(const std::string& text, igTextAlign halign=igTextAligns::CENTER, int width=0);
+	igSlider	Slider(igIdent id, float& val, float minVal, float maxVal, int width=0);
+	igTextbox	TextBox(igIdent id, std::string& value, int width=0);
+	igSeparator	Separator();
 
 	template <class R>
-	R* Drag(igIdent id, const char* title, igDraggable& userData, igAcceptDrop fun=igAlwaysAcceptDrop, int width=0)
+	igDrag<R> Drag(igIdent id, const char* title, igDraggable& userData, igAcceptDrop fun=igAlwaysAcceptDrop, int width=0)
 	{
 		const int x = scrollArea.currX;
 		const int y = scrollArea.currY;
@@ -173,11 +159,11 @@ public:
 			width = scrollArea.width - currXPos - igSizing::SCROLLAREA_MARGIN_X - igSizing::SCROLLBAR_WIDTH*scrollArea.scrollbar;
 		}
 
-		if(MouseInside(x, y, width, igSizing::DRAG_HEIGHT) && dragPointer!=&userData &&
+		if(MouseInside((float)x, (float)y, (float)width, igSizing::DRAG_HEIGHT) && dragPointer!=&userData &&
 			dynamic_cast<R*>(dragPointer)!=0)
 			canDrop = true;
 
-		igDraggable* result = Drag(id, x, y, width, igSizing::DRAG_HEIGHT, title, &userData, fun);
+		igDrag<igDraggable>& result = Drag(id, x, y, width, (float)igSizing::DRAG_HEIGHT, title, &userData, fun);
 
 		if(maxSize)
 		{
@@ -186,7 +172,9 @@ public:
 		} else 
 			scrollArea.currX += width + igSizing::SCROLLAREA_MARGIN_X;
 
-		return dynamic_cast<R*>(result);
+		igDrag<R> drag;
+		drag = result;
+		return drag;
 	}
 };
 

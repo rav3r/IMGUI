@@ -6,7 +6,7 @@
 extern sf::RenderWindow* gWindow;
 extern sf::Font* gFont;
 
-static sf::Color textColor(255, 255, 255, 255);
+static sf::Color textColor(204, 204, 204, 255);
 static sf::Color elementColor(85, 87, 82, 255);
 static sf::Color pressedElemColor(108,140,213,255);
 static sf::Color hoverElemColor(70,113,213,255);
@@ -99,6 +99,8 @@ void gfxPrint(float x, float y, const char* str, int style, int pipePos, int pip
 		gfxDrawRectangle(p1, pos.y-pipeSize/2, p2-p1, pipeSize*2, GFX_STYLE_ELEM_HOVER, false);
 	}
 
+	sf::Vector2f p = text.getPosition();
+	text.setPosition((int)p.x, (int)p.y);
 	gWindow->draw(text);
 
 	if(pipePos >= 0 && pipePos == pipe2Pos)
@@ -124,7 +126,7 @@ int gfxCharAt( float x, float y, const char* str, int style, float mouseX )
 	sf::Text text(str, *gFont, charSize);
 	sf::FloatRect r = text.getLocalBounds();
 	sf::Vector2f pos = sf::Vector2f(x - (r.left+r.width)/2.0f, y - text.getCharacterSize()/2.0f);
-	pos = sf::Vector2f((int)pos.x, (int)pos.y);
+	pos = sf::Vector2f((int)(pos.x+0.5f), (int)(pos.y+0.5f));
 	text.setPosition(pos);
 	int character = 0;
 	while(character < text.getString().getSize() && text.findCharacterPos(character+1).x < mouseX+2)

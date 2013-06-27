@@ -2,12 +2,13 @@
 #include <sstream>
 #include <SFML/Graphics.hpp>
 
-#include "igRenderer.h"
+#include "igDrawing.h"
 
 #include "IMGUI.h"
 
 sf::RenderWindow* gWindow = 0;
 sf::Font* gFont = 0;
+sf::Texture* gCheckboxTex = 0;
 
 std::string IntToStr(int k)
 {
@@ -74,10 +75,10 @@ public:
 			gui.Space(16);
 		else
 		{
-			if(gui.Checkbox(GEN_ID(*this), expand, 0))
+			if(DrawCheckbox(gui.Checkbox(GEN_ID(*this), expand, 0), *gCheckboxTex).clicked)
 				expand = !expand;
 		}
-		if(DragTreeNode* child = gui.Drag<DragTreeNode>(GEN_ID(*this), name.c_str(), *this))
+		if(DragTreeNode* child = DrawDrag(gui.Drag<DragTreeNode>(GEN_ID(*this), name.c_str(), *this)).drop)
 		{
 			AddChild(child);
 		}
@@ -89,6 +90,16 @@ public:
 		//gui.Unindent();
 	}
 };
+
+const igMove& DrawSizer(const igMove& sizer, sf::Texture& tex)
+{
+	igRect r = sizer.rect;
+	sf::Sprite spr(tex);
+	spr.setPosition(sizer.prevX, sizer.prevY);
+	spr.setScale(r.w/tex.getSize().x, r.h/tex.getSize().y);
+	gWindow->draw(spr);
+	return sizer;
+}
 
 #include "gfxlib.h"
 
@@ -103,8 +114,14 @@ int main()
 	if(!font.loadFromFile("data/SourceSansPro-Regular.otf"))
         	return EXIT_FAILURE;
 
-	igRenderer guiRend;
-	igContext gui(&guiRend);
+	sf::Texture checkboxTex;
+	gCheckboxTex = &checkboxTex;
+	checkboxTex.loadFromFile("data/checkbox.png");
+
+	sf::Texture sizerTex;
+	sizerTex.loadFromFile("data/sizer.png");
+
+	igContext gui;
 
 	bool checkboxValue = true;
 	float vSliderValue = 0.0f;
@@ -131,6 +148,9 @@ int main()
 	int id=0;
 
 	float k = 1.23f;
+
+	float size1 = 250;
+	float size2 = 250;
 	
 	while (window.isOpen())
 	{
@@ -197,84 +217,116 @@ int main()
 
 		sf::Vector2u size = gWindow->getSize();
 		
-		guiRend.time = timer.getElapsedTime().asMilliseconds();
+		//guiRend.time = timer.getElapsedTime().asMilliseconds();
 
 		gui.Begin();
 
-		static int leftScrollbarOffset = 0;
-		gui.BeginScrollArea(GEN_NULL_ID, size.x - 250, 0, 250, size.y, leftScrollbarOffset, true, igColor(70/255.0f, 70/255.0f, 70/255.0f));
+		static float movey = 0;
 
-		gui.Label("Properties", igTextAlign::CENTER);
-		gui.Separator();
-		gui.Button(GEN_NULL_ID, "Button 1");
-		gui.Button(GEN_NULL_ID, "Button 2");
+		static int leftScrollbarOffset = 0;
+		DrawAreaBG(gui.BeginScrollArea(GEN_NULL_ID, size.x - size2-8-size1, 0, size2, size.y, leftScrollbarOffset, true, igColor(70/255.0f, 70/255.0f, 70/255.0f)));
+
+		DrawButton(gui.Button(GEN_NULL_ID, "X", 32));
+		DrawLabel(gui.Label("Properties", igTextAlign::LEFT));
+		DrawSeparator(gui.Separator());
+		DrawButton(gui.Button(GEN_NULL_ID, "Button 1"));
+		DrawButton(gui.Button(GEN_NULL_ID, "Button 2"));
 
 		std::stringstream bleh;
 		bleh << k;
 		std::string kk = bleh.str();
 
-		gui.TextBox(GEN_NULL_ID, kk);
+		DrawTextbox(gui.TextBox(GEN_NULL_ID, kk));
 
 		bleh.str("");
 		bleh << kk;
 		bleh >> k;
 
+		DrawLabel(gui.Label("Clear color", igTextAligns::LEFT));
 		float slidVal = bgColor.r/255.0f;
-		if(gui.Slider(GEN_NULL_ID, slidVal, 0, 1))
+		DrawLabel(gui.Label("R", igTextAligns::CENTER, 20));
+		if(DrawSlider(gui.Slider(GEN_NULL_ID, slidVal, 0, 1, 120)))
 			bgColor.r = slidVal*255.0f+0.5f;
+		std::stringstream rs;
+		rs << (int)bgColor.r;
+		std::string strr = rs.str();
+		DrawTextbox(gui.TextBox(GEN_NULL_ID, strr));
 		slidVal = bgColor.g/255.0f;
-		if(gui.Slider(GEN_NULL_ID, slidVal, 0, 1))
+		DrawLabel(gui.Label("G", igTextAligns::CENTER, 20));
+		if(DrawSlider(gui.Slider(GEN_NULL_ID, slidVal, 0, 1)))
 			bgColor.g = slidVal*255.0f+0.5f;
 		slidVal = bgColor.b/255.0f;
-		if(gui.Slider(GEN_NULL_ID, slidVal, 0, 1))
+		DrawLabel(gui.Label("B", igTextAligns::CENTER, 20));
+		if(DrawSlider(gui.Slider(GEN_NULL_ID, slidVal, 0, 1)))
 			bgColor.b = slidVal*255.0f+0.5f;
-		if(gui.Checkbox(GEN_NULL_ID, checkboxValue, "checkbox"))
+		if(DrawCheckbox(gui.Checkbox(GEN_NULL_ID, checkboxValue, "checkbox"), checkboxTex).clicked)
 			checkboxValue = !checkboxValue;
 		if(checkboxValue)
 		{
-			gui.Button(GEN_NULL_ID, "Button 3");
-			gui.Button(GEN_NULL_ID, "Button 4");
-			gui.Button(GEN_NULL_ID, "Button 1");
-			gui.Button(GEN_NULL_ID, "Button 2");
-			gui.Button(GEN_NULL_ID, "Button 3");
-			gui.Button(GEN_NULL_ID, "Button 4");
-			gui.Button(GEN_NULL_ID, "Button 1");
-			gui.Button(GEN_NULL_ID, "Button 2");
-			gui.Button(GEN_NULL_ID, "Button 3");
-			gui.Button(GEN_NULL_ID, "Button 4");
+			DrawButton(gui.Button(GEN_NULL_ID, "Button 3"));
+			DrawButton(gui.Button(GEN_NULL_ID, "Button 4"));
+			DrawButton(gui.Button(GEN_NULL_ID, "Button 1"));
+			DrawButton(gui.Button(GEN_NULL_ID, "Button 2"));
+			DrawButton(gui.Button(GEN_NULL_ID, "Button 3"));
+			DrawButton(gui.Button(GEN_NULL_ID, "Button 4"));
+			DrawButton(gui.Button(GEN_NULL_ID, "Button 1"));
+			DrawButton(gui.Button(GEN_NULL_ID, "Button 2"));
+			DrawButton(gui.Button(GEN_NULL_ID, "Button 3"));
+			DrawButton(gui.Button(GEN_NULL_ID, "Button 4"));
 		}
 		static std::string text1 = "Edit me!";
-		gui.TextBox(GEN_NULL_ID, text1, 100);
-		gui.Button(GEN_NULL_ID, "do it!");
+		DrawTextbox(gui.TextBox(GEN_NULL_ID, text1, 100));
+		DrawButton(gui.Button(GEN_NULL_ID, "do it!"));
 		static std::string text2 = "Or me!";
-		gui.TextBox(GEN_NULL_ID, text2);
+		DrawTextbox(gui.TextBox(GEN_NULL_ID, text2));
 		for(int i=0; i<50; i++)
 		{
-			if(gui.Button(GEN_IID(i), "Button 1").onClicked)
+			if(DrawButton(gui.Button(GEN_IID(i), "Button 1")).clicked)
 			{
 				std::cout << "clicked " << i<<"\n";
 			}
 		}
 
-		gui.EndScrollArea();
+		DrawAreaFG(gui.EndScrollArea());
 
 		static int rightScrollbarOffset = 0;
-		gui.BeginScrollArea(GEN_NULL_ID, size.x - 500, 0, 250, size.y, rightScrollbarOffset, true,igColor(70/255.0f, 70/255.0f, 70/255.0f));
+		DrawAreaBG(gui.BeginScrollArea(GEN_NULL_ID, size.x - size1, 0, size1, size.y, rightScrollbarOffset, true,igColor(70/255.0f, 70/255.0f, 70/255.0f)));
 
-		gui.Label("Hierarchy", igTextAlign::CENTER);
-		gui.Separator();
-		if(gui.Button(GEN_NULL_ID, "Add node").onClicked)
+		DrawButton(gui.Button(GEN_NULL_ID, "X", 32));
+		DrawLabel(gui.Label("Hierarchy", igTextAlign::LEFT));
+		DrawSeparator(gui.Separator());
+		if(DrawButton(gui.Button(GEN_NULL_ID, "Add node")).clicked)
 		{
 			id++;
 			root->AddChild(new DragTreeNode("Node nr "+IntToStr(id)));
 		}
-		gui.Separator();
+		DrawSeparator(gui.Separator());
 
 		root->DoGUI(gui);
 
-		gui.EndScrollArea();
+		DrawAreaFG(gui.EndScrollArea());
 
-		gui.End();
+		int ddd=0;
+		DrawAreaBG(gui.BeginScrollArea(GEN_NULL_ID, size.x-64-size1-size2-16, 0, 64, size.y, ddd, false, igColor(50/255.0f, 50/255.0f, 50/255.0f)));
+		DrawButton(gui.Button(GEN_NULL_ID, "Hier"));
+		DrawButton(gui.Button(GEN_NULL_ID, "Prop"));
+		DrawButton(gui.Button(GEN_NULL_ID, "PSys"));
+		DrawButton(gui.Button(GEN_NULL_ID, "Ent"));
+		DrawButton(gui.Button(GEN_NULL_ID, "Tex"));
+		DrawAreaFG(gui.EndScrollArea());
+
+		float movex = size.x-size1-8-size2-8;
+		DrawSizer(gui.Move(GEN_NULL_ID, movex, movey, 8, size.y, ""), sizerTex);
+		movey = 0;
+		size2 = size.x-size1-8-movex-8;
+		if(size2<150) size2 = 150;;
+		movex = size.x-size1-8;
+		DrawSizer(gui.Move(GEN_NULL_ID, movex, movey, 8, size.y, ""), sizerTex);
+		movey = 0;
+		size1 = size.x-movex-8;
+		if(size1<150) size1 = 150;
+
+		DrawDragged(gui.End());
 
 		window.display();
 	}

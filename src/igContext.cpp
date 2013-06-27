@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include "gfxlib.h"
-
 static igIdent nullId = GEN_NULL_ID;
 
 void sysSetCliboardString(std::string str);
@@ -11,8 +9,9 @@ std::string sysGetCliboardString();
 
 using namespace igSizing;
 
-igContext::igContext(igRenderer* rend):
-	renderer(rend)
+int gfxCharAt(float x, float y, const char* text, int style, float mouseX);
+
+igContext::igContext()
 {
 	hotItem = nullId;
 	activeItem = nullId;
@@ -77,7 +76,7 @@ void igContext::Begin()
 	currentMouseClipping.active = false;
 }
 
-void igContext::End()
+igDragged igContext::End()
 {
 	if(leftDown == false)
 	{
@@ -93,12 +92,13 @@ void igContext::End()
 		dragPointer = 0;
 	}
 
+	igDragged dragged;
 	if(dragItem != nullId && dragMoved)
 	{
-		gfxDrawRectangle(dragRect.x, dragRect.y, dragRect.w, dragRect.h, canDrop ? GFX_STYLE_CAN_DRAG : GFX_STYLE_CAN_NOT_DRAG);
-		if(dragTitle.empty() == false)
-			gfxPrint(dragRect.x + dragRect.w/2.0f, dragRect.y + dragRect.h/2.0f,
-					 dragTitle.c_str(), GFX_STYLE_NONE);
+		dragged.canDrop = canDrop;
+		dragged.show = true;
+		dragged.title = dragTitle;
+		dragged.rect = dragRect;
 	}
 
 	mouseWheel = 0;
@@ -108,6 +108,8 @@ void igContext::End()
 	ctrlX = false;
 	ctrlV = false;
 	ctrlA = false;
+
+	return dragged;
 }
 
 bool igContext::LeftJustUp()
@@ -119,46 +121,52 @@ igButton igContext::Button(igIdent id, float x, float y,
 	float width, float height, const char* title)
 {
 	igButton button;
+	button.rect = igRect(x, y, width, height);
+	button.title = title;
     if(MouseInside(x, y, width, height))
     {
 		hotItem = id;
 		if(leftDown && activeItem == nullId)
 			activeItem = id;
-		button.onHover = true;
+		button.hover = true;
 	}
 
 	// draw button
 	int state = igItemStates::NONE;
 	if(activeItem == id) state |= igItemStates::PRESSED;
 	if(hotItem == id) state |= igItemStates::HOVER;
-	renderer->DrawButton(state, 0, x, y, width, height, title);
 
-
-	button.onClicked = leftDown == false && hotItem == id && activeItem == id;
-	button.onDown = leftDown && activeItem == id;
+	button.clicked = leftDown == false && hotItem == id && activeItem == id;
+	button.down = leftDown && activeItem == id;
 
 	return button;
 }
 
-bool igContext::Checkbox(igIdent id, float x, float y, float width, float height, bool value)
+igCheckbox igContext::Checkbox(igIdent id, float x, float y, float width, float height, bool value)
 {
+	igCheckbox checkbox;
+	checkbox.rect = igRect(x, y, width, height);
+	checkbox.value = value;
 	if(MouseInside(x, y, width, height))
 	{
 		hotItem = id;
 		if(leftDown && activeItem == nullId)
 			activeItem = id;
+		checkbox.hover = true;
 	}
 
 	// draw checkbox
 	int state = igItemStates::NONE;
 	if(activeItem == id) state |= igItemStates::PRESSED;
 	if(hotItem == id) state |= igItemStates::HOVER;
-	renderer->DrawCheckbox(state, 0, x, y, width, height, value);
 
-	return leftDown == false && hotItem == id && activeItem == id;
+	checkbox.clicked = leftDown == false && hotItem == id && activeItem == id;
+	checkbox.down = leftDown && activeItem == id;
+
+	return checkbox;
 }
 
-bool igContext::VScrollbar(igIdent id, float x, float y, float width, float height, float aspect, float& value)
+igVScroll igContext::VScroll(igIdent id, float x, float y, float width, float height, float aspect, float& value)
 {
 	float prevValue = value;
 
@@ -178,45 +186,25 @@ bool igContext::VScrollbar(igIdent id, float x, float y, float width, float heig
 		if(value > 1.0f - aspect) value = 1.0f - aspect;
 	}
 
-	renderer->DrawVScrollbar(0, 0, x, y, width, height, aspect, value);
+	igVScroll scrollbar;
+	scrollbar.changed = prevValue != value;
+	scrollbar.rect = igRect(x, y, width, height);
+	scrollbar.aspect = aspect;
+	scrollbar.value = value;
 
-	return prevValue != value;
+	return scrollbar;
 }
 
-bool igContext::HScrollbar(igIdent id, float x, float y, float width, float height, float aspect, float& value)
-{
-	float prevValue = value;
-
-	if(MouseInside(x, y, width, height))
-	{
-		hotItem = id;
-		if(leftDown && activeItem == nullId)
-		{
-			activeItem = id;
-		}
-	}
-
-	if(leftDown && activeItem == id)
-	{
-		value = (mouseX - x)/width - aspect/2.0f;
-
-		if(value < 0) value = 0;
-		if(value > 1.0f - aspect) value = 1.0f - aspect;
-	}
-
-	renderer->DrawHScrollbar(0, 0, x, y, width, height, aspect, value);
-
-	return prevValue != value;
-}
-
-bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
+igTextbox igContext::TextBox(igIdent id, float x, float y, float width, float height,
 						std::string& value, const std::string& charset)
 {
+	igTextbox textbox;
 	std::string prevValue = value;
 
 	if(MouseInside(x, y, width, height))
 	{
 		hotItem = id;
+		textbox.hover = true;
 		if(leftDown && activeItem == nullId)
 		{
 			activeItem = id;
@@ -353,15 +341,23 @@ bool igContext::TextBox(igIdent id, float x, float y, float width, float height,
 
 	int state = igItemStates::NONE;
 	if(keyboardItem == id) state |= igItemStates::TEXT_FOCUS;
-	renderer->DrawTextBox(state, 0, x, y, width, height, value, textCharPos, textCharPos2);
 
-	return prevValue != value;
+	if(activeItem == id && leftDown) textbox.down = true;
+
+	textbox.rect = igRect(x, y, width, height);
+	textbox.pipePos1 = textCharPos;
+	textbox.pipePos2 = textCharPos2;
+	textbox.textFocus = keyboardItem == id;
+	textbox.value = value;
+
+	return textbox;
 }
 
-igDraggable* igContext::Drag(igIdent id, float x, float y, float width, float height,
+igDrag<igDraggable> igContext::Drag(igIdent id, float x, float y, float width, float height,
 					  const char* title, igDraggable* userData, igAcceptDrop fun)
 {
 	igDraggable* result = 0;
+	igDrag<igDraggable> drag;
 
 	if(dragPointer && userData==dragPointer)
 		dragMissing = false;
@@ -370,6 +366,7 @@ igDraggable* igContext::Drag(igIdent id, float x, float y, float width, float he
 	{
 		dragRect.x = mouseX - dragX;
 		dragRect.y = mouseY - dragY;
+		drag.down = true;
 
 		if(abs(x - dragRect.x) > 1 || abs(y - dragRect.y) > 1)
 			dragMoved = true;
@@ -383,9 +380,11 @@ igDraggable* igContext::Drag(igIdent id, float x, float y, float width, float he
 	{
 		if(MouseInside(x, y, width, height))
 		{
+			drag.hover = true;
 			hotItem = id;
 			if(leftDown && dragItem == nullId && activeItem == nullId)
 			{
+				drag.down = true;
 				activeItem = dragItem = id;
 
 				dragX = mouseX - x;
@@ -413,30 +412,40 @@ igDraggable* igContext::Drag(igIdent id, float x, float y, float width, float he
 	if(activeItem == id) state |= igItemStates::PRESSED;
 	if(hotItem == id) state |= igItemStates::HOVER;
 
-	renderer->DrawDrag(state, 0, x, y, width, height, title);
+	drag.drop = result;
+	drag.rect = igRect(x, y, width, height);
+	drag.title = title;
 
-	return result;
+	return drag;
 }
 
-bool igContext::Move(igIdent id, float& x, float& y, float width, float height, const char* title)
+igMove igContext::Move(igIdent id, float& x, float& y, float width, float height, const char* title)
 {
 	float prevX = x, prevY = y;
 	bool result = false;
 
+	igMove move;
+
 	if(dragItem == id)
 	{
+		dragMissing = false;
+
 		x = mouseX - dragX;
 		y = mouseY - dragY;
 
 		if(leftDown == false)
 		{
 			dragItem = nullId;
+		} else
+		{
+			move.down = true;
 		}
 		result = true;
 	} else
 	{
 		if(MouseInside(x, y, width, height))
 		{
+			move.hover = true;
 			hotItem = id;
 			if(leftDown && dragItem == nullId && activeItem == nullId)
 			{
@@ -448,6 +457,8 @@ bool igContext::Move(igIdent id, float& x, float& y, float width, float height, 
 				dragMoved = false;
 
 				result = true;
+				dragMissing = false;
+				move.down = true;
 			}
 		}
 	}
@@ -455,44 +466,37 @@ bool igContext::Move(igIdent id, float& x, float& y, float width, float height, 
 	int state = igItemStates::NONE;
 	if(activeItem == id) state |= igItemStates::PRESSED;
 	if(hotItem == id) state |= igItemStates::HOVER;
-	renderer->DrawMove(state, 0, x, y, prevX, prevY, width, height, title);
-	
-	return prevX != x || prevY != y;
+
+	move.rect = igRect(x, y, width, height);
+	move.moved = prevX != x || prevY != y;
+	move.prevX = prevX;
+	move.prevY = prevY;
+
+	return move;
 }
 
-bool igContext::Tab(igIdent id, float x, float y, float width, float height, const char* title, bool value)
+// this is really stupid function :)
+igLabel igContext::Label(float x, float y, float width, float height, const std::string& text, igTextAlign halign)
 {
-	if(MouseInside(x, y, width, height))
-	{
-		hotItem = id;
-		if(leftDown && activeItem == nullId)
-			activeItem = id;
-	}
+	igLabel label;
 
-	int state = igItemStates::NONE;
-	if(activeItem == id) state |= igItemStates::PRESSED;
-	if(hotItem == id) state |= igItemStates::HOVER;
-	renderer->DrawTab(state, 0, x, y, width, height, title, value);
-	
-	return (leftDown == false && hotItem == id && activeItem == id) || value;
+	label.rect = igRect(x, y, width, height);
+	label.align = halign;
+	label.value = text;
+
+	return label;
+
 }
 
-void igContext::Label(float x, float y, float width, float height, const std::string& text, igTextAlign halign)
-{
-	int hint = 0;
-	if(halign == igTextAligns::LEFT)
-		hint = -1;
-	if(halign == igTextAligns::RIGHT)
-		hint = 1;
-	renderer->DrawLabel(GFX_STYLE_NONE, x, y, width, height, text, hint);
-}
-
-bool igContext::HSlider( igIdent id, float x, float y, float width, float height, float& value )
+igSlider igContext::HSlider( igIdent id, float x, float y, float width, float height, float& value )
 {
 	float prevValue = value;
 
+	igSlider slider;
+
 	if(MouseInside(x, y, width, height))
 	{
+		slider.hover = true;
 		hotItem = id;
 		if(leftDown && activeItem == nullId)
 		{
@@ -502,18 +506,20 @@ bool igContext::HSlider( igIdent id, float x, float y, float width, float height
 
 	if(leftDown && activeItem == id)
 	{
+		slider.down = true;
 		value = (mouseX - x)/width;
 
 		if(value < 0) value = 0;
 		if(value > 1.0f) value = 1.0f;
 	}
 
-	renderer->DrawHSlider(x, y, width, height, value);
+	slider.value = value;
+	slider.rect = igRect(x, y, width, height);
 
-	return prevValue != value;
+	return slider;
 }
 
-void igContext::BeginScrollArea( igIdent id, float x, float y, float width, float height, int& offset, bool scrollbar, igColor color )
+igAreaBG igContext::BeginScrollArea( igIdent id, float x, float y, float width, float height, int& offset, bool scrollbar, igColor color )
 {
 	currentMouseClipping.active = true;
 	currentMouseClipping.x = x;			currentMouseClipping.y = y;
@@ -530,19 +536,19 @@ void igContext::BeginScrollArea( igIdent id, float x, float y, float width, floa
 
 	scrollArea.currY = y - *scrollArea.offset;
 
-	renderer->DrawScrollArea(GFX_STYLE_SCROLL_AREA, x, y, width, height, color);
-
-	gfxScissor(x, y, width, height);
+	igAreaBG scrollArea;
+	scrollArea.rect = igRect(x, y, width, height);
+	return scrollArea;
 }
 
-void igContext::EndScrollArea()
+igAreaFG igContext::EndScrollArea()
 {
 	currentMouseClipping.active = false;
-	gfxDisableScissor();
 	float totalSize = (float)(scrollArea.currY - scrollArea.startY + *scrollArea.offset);
 	float aspect = scrollArea.height/totalSize;
 	float curr = *scrollArea.offset/totalSize;
 
+	igAreaFG areaFG;
 	if(scrollArea.scrollbar != 0)
 	{
 		float posX = scrollArea.startX + scrollArea.width - SCROLLBAR_WIDTH;
@@ -551,7 +557,7 @@ void igContext::EndScrollArea()
 		
 		float newAspect = aspect;
 		if(aspect > 1) newAspect = 1;
-		VScrollbar(scrollArea.id, posX, scrollArea.startY, SCROLLBAR_WIDTH, scrollArea.height, newAspect, value);
+		areaFG.scroll = VScroll(scrollArea.id, posX, scrollArea.startY, SCROLLBAR_WIDTH, scrollArea.height, newAspect, value);
 		*scrollArea.offset = value * totalSize+0.5f;
 		if(MouseInside(scrollArea.startX, scrollArea.startY, scrollArea.width, scrollArea.height))
 			*scrollArea.offset -= mouseWheel*30;
@@ -563,6 +569,7 @@ void igContext::EndScrollArea()
 			*scrollArea.offset = totalSize - scrollArea.height;
 		if(*scrollArea.offset < 0) *scrollArea.offset = 0;
 	}
+	return areaFG;
 }
 
 void igContext::AdjustNewScrollAreaHeight( int height )
@@ -603,19 +610,19 @@ igButton igContext::Button( igIdent id, const char* title, int width )
 	return button;
 }
 
-bool igContext::Checkbox( igIdent id, bool value, const char* title)
+igCheckbox igContext::Checkbox( igIdent id, bool value, const char* title)
 {
 	const int x = scrollArea.currX;
 	const int y = scrollArea.currY+CHECKBOX_HEIGHT/2-CHECKBOX_SIZE/2;
 
-	bool result = Checkbox(id, x, y, CHECKBOX_SIZE, CHECKBOX_SIZE, value);
+	igCheckbox result = Checkbox(id, x, y, CHECKBOX_SIZE, CHECKBOX_SIZE, value);
 
 	scrollArea.currX += CHECKBOX_SIZE + SCROLLAREA_MARGIN_X;
 
 	return result;
 }
 
-bool igContext::TextBox( igIdent id, std::string& value, int width )
+igTextbox igContext::TextBox( igIdent id, std::string& value, int width )
 {
 	const int x = scrollArea.currX;
 	const int y = scrollArea.currY;
@@ -628,7 +635,7 @@ bool igContext::TextBox( igIdent id, std::string& value, int width )
 		width = scrollArea.width - currXPos - SCROLLAREA_MARGIN_X - SCROLLBAR_WIDTH*scrollArea.scrollbar;
 	}
 
-	bool result = TextBox(id, x, y, width, TEXTBOX_HEIGHT, value);
+	igTextbox& result = TextBox(id, x, y, width, TEXTBOX_HEIGHT, value);
 
 	AdjustNewScrollAreaHeight(TEXTBOX_HEIGHT);
 
@@ -648,7 +655,7 @@ void igContext::Space( int width )
 		scrollArea.currX += width + SCROLLAREA_MARGIN_X;
 }
 
-void igContext::Label( const std::string& text, igTextAlign halign, int width)
+igLabel igContext::Label( const std::string& text, igTextAlign halign, int width)
 {
 	const int x = scrollArea.currX;
 	const int y = scrollArea.currY+SCROLLAREA_MARGIN_Y;
@@ -661,7 +668,7 @@ void igContext::Label( const std::string& text, igTextAlign halign, int width)
 		width = scrollArea.width - currXPos - SCROLLAREA_MARGIN_X - SCROLLBAR_WIDTH*scrollArea.scrollbar;
 	}
 
-	Label(x, y, width, LABEL_HEIGHT, text, halign);
+	igLabel& label = Label(x, y, width, LABEL_HEIGHT, text, halign);
 
 	AdjustNewScrollAreaHeight(LABEL_HEIGHT);
 
@@ -669,9 +676,11 @@ void igContext::Label( const std::string& text, igTextAlign halign, int width)
 		NewLine();
 	else 
 		scrollArea.currX += width + SCROLLAREA_MARGIN_X;
+
+	return label;
 }
 
-bool igContext::Slider( igIdent id, float& value, float minVal, float maxVal, int width/*=0*/ )
+igSlider igContext::Slider( igIdent id, float& value, float minVal, float maxVal, int width/*=0*/ )
 {
 	const int x = scrollArea.currX + SLIDER_THUMB_SIZE/2.0f;
 	const int y = scrollArea.currY+SCROLLAREA_MARGIN_Y;
@@ -684,14 +693,14 @@ bool igContext::Slider( igIdent id, float& value, float minVal, float maxVal, in
 		width = scrollArea.width - currXPos - SCROLLAREA_MARGIN_X - SCROLLBAR_WIDTH*scrollArea.scrollbar - SLIDER_THUMB_SIZE;
 	}
 
-	bool result = HSlider(id, x, y, width, 20, value);
+	igSlider& result = HSlider(id, x, y, width, 20, value);
 
 	AdjustNewScrollAreaHeight(SLIDER_HEIGHT);
 
 	if(maxSize)
 		NewLine();
 	else 
-		scrollArea.currX += width + SCROLLAREA_MARGIN_X;
+		scrollArea.currX += width + SLIDER_THUMB_SIZE + SCROLLAREA_MARGIN_X;
 
 	return result;
 }
@@ -710,12 +719,21 @@ void igContext::Unindent()
 	scrollArea.currX = scrollArea.startX + SCROLLAREA_MARGIN_X + scrollArea.indent;
 }
 
-void igContext::Separator()
+igSeparator igContext::Separator()
 {
+	igSeparator separator;
+
+	float x = scrollArea.startX;
 	float y = scrollArea.currY + SCROLLAREA_MARGIN_Y + SEPARATOR_HEIGHT/2 - SEPARATOR_SIZE/2;
-	renderer->DrawSeparator(scrollArea.startX, y, scrollArea.width - SCROLLBAR_WIDTH*scrollArea.scrollbar, SEPARATOR_SIZE);
+	float width = scrollArea.width - SCROLLBAR_WIDTH*scrollArea.scrollbar;
+	float height = SEPARATOR_SIZE;
+
+	separator.rect = igRect(x, y, width, height);
+
 	AdjustNewScrollAreaHeight(SEPARATOR_HEIGHT);
 	NewLine();
+	
+	return separator;
 }
 
 void igContext::ArrowLeftDown()
