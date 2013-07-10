@@ -110,8 +110,8 @@ struct igMove: public igWidget
 	bool down;
 	bool moved;
 
-	float prevX;
-	float prevY;
+	int prevX;
+	int prevY;
 };
 
 struct igVScroll: public igWidget

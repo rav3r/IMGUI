@@ -26,7 +26,7 @@ const igButton& DrawButton(const igButton& button)
 		gfxDrawRectangle(button.rect, GFX_STYLE_NONE);
 	}
 
-	gfxPrint(r.x+r.w/2.0f, r.y+r.h/2.0f, button.title, GFX_STYLE_NONE);
+	gfxPrint(r.x+r.w/2, r.y+r.h/2, button.title, GFX_STYLE_NONE);
 
 	return button;
 }
@@ -48,10 +48,10 @@ const igCheckbox& DrawCheckbox(const igCheckbox& checkbox, sf::Texture& thickTex
 
 	if(checkbox.value)
 	{
-		float x = checkbox.rect.x; float y = checkbox.rect.y;
-		float w = checkbox.rect.w; float h = checkbox.rect.h;
+		int x = checkbox.rect.x; int y = checkbox.rect.y;
+		int w = checkbox.rect.w; int h = checkbox.rect.h;
 		sf::Sprite thick(thickTexture);
-		thick.setPosition(x, y);
+		thick.setPosition((float)x, (float)y);
 		gWindow->draw(thick);
 	}
 
@@ -82,7 +82,7 @@ const igTextbox& DrawTextbox(const igTextbox& textbox)
 	if(pipePos1 > pipePos2)
 		std::swap(pipePos1, pipePos2);
 
-	gfxPrint(r.x + r.w/2.0f, r.y + r.h/2.0f, textbox.value.c_str(), GFX_STYLE_NONE, pipePos1, pipePos2); 
+	gfxPrint(r.x + r.w/2, r.y + r.h/2, textbox.value.c_str(), GFX_STYLE_NONE, pipePos1, pipePos2); 
 
 	return textbox;
 }
@@ -93,15 +93,15 @@ const igLabel& DrawLabel(const igLabel& label)
 	int align = 0;
 	if(label.align == igTextAligns::LEFT) align = 1;
 	if(label.align == igTextAligns::RIGHT) align = -1;
-	gfxPrint(r.x + r.w/2.0f+r.w/2.0f*align, r.y + r.h/2.0f, label.value.c_str(), GFX_STYLE_NONE, -1, -1, align); 
+	gfxPrint(r.x + r.w/2+r.w/2*align, r.y + r.h/2, label.value.c_str(), GFX_STYLE_NONE, -1, -1, align); 
 	return label;
 }
 
 const igSlider& DrawSlider(const igSlider& slider)
 {
 	igRect r = slider.rect;
-	gfxDrawRectangle(r.x, r.y+r.h/4.0f, r.w, r.h/2.0f, GFX_STYLE_SLIDER_BG, false);
-	gfxDrawRectangle(r.x+slider.value*r.w-igSizing::SLIDER_THUMB_SIZE/2.0f, r.y, igSizing::SLIDER_THUMB_SIZE, r.h, GFX_STYLE_SLIDER_THUMB, false);
+	gfxDrawRectangle(r.x, r.y+r.h/4, r.w, r.h/2, GFX_STYLE_SLIDER_BG, false);
+	gfxDrawRectangle((int)(r.x+slider.value*r.w-igSizing::SLIDER_THUMB_SIZE/2), r.y, igSizing::SLIDER_THUMB_SIZE, r.h, GFX_STYLE_SLIDER_THUMB, false);
 	return slider;
 }
 
@@ -120,7 +120,7 @@ void DrawDrag(const igDrag<void>& drag)
 		gfxDrawRectangle(drag.rect, GFX_STYLE_NONE);
 	}
 
-	gfxPrint(r.x + r.w/2.0f, r.y + r.h/2.0f, drag.title.c_str(), GFX_STYLE_NONE);
+	gfxPrint(r.x + r.w/2, r.y + r.h/2, drag.title.c_str(), GFX_STYLE_NONE);
 }
 
 const igMove& DrawMove(const igMove& move)
@@ -166,7 +166,7 @@ const igAreaFG& DrawAreaFG(const igAreaFG& scrollArea)
 	float thumbSize = r.h * scroll.aspect;
 
 	gfxDrawRectangle(scroll.rect, GFX_STYLE_SLIDER_BG, false);
-	gfxDrawRectangle(r.x, r.y+scroll.value*r.h, r.w, thumbSize, GFX_STYLE_SLIDER_THUMB, false);
+	gfxDrawRectangle(r.x, (int)(r.y+scroll.value*r.h), r.w, (int)thumbSize, GFX_STYLE_SLIDER_THUMB, false);
 
 	return scrollArea;
 }
@@ -180,7 +180,7 @@ const igDragged& DrawDragged(const igDragged& dragged)
 
 	gfxDrawRectangle(dragged.rect, dragged.canDrop ? GFX_STYLE_CAN_DRAG : GFX_STYLE_CAN_NOT_DRAG);
 	if(dragged.title.empty() == false)
-		gfxPrint(r.x + r.w/2.0f, r.y + r.h/2.0f, dragged.title.c_str(), GFX_STYLE_NONE);
+		gfxPrint(r.x + r.w/2, r.y + r.h/2, dragged.title.c_str(), GFX_STYLE_NONE);
 
 	return dragged;
 }

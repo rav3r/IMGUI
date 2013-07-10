@@ -13,10 +13,10 @@ static sf::Color hoverElemColor(70,113,213,255);
 static sf::Color checkboxColor(255, 255, 255, 255);
 static sf::Color borderColor(6,38,111,255);
 
-void gfxDrawRectangle(float x, float y, float width, float height, int style, bool border, float r, float g, float b)
+void gfxDrawRectangle(int x, int y, int width, int height, int style, bool border, float r, float g, float b)
 {
-	sf::RectangleShape shape(sf::Vector2f(width, height));
-	shape.setPosition(sf::Vector2f(x, y));
+	sf::RectangleShape shape(sf::Vector2f((float)width, (float)height));
+	shape.setPosition(sf::Vector2f((float)x, (float)y));
 
 	border= false;
 	if(border)
@@ -80,7 +80,7 @@ void gfxDrawRectangle(float x, float y, float width, float height, int style, bo
 	gWindow->draw(rightBorder);
 }
 
-void gfxPrint(float x, float y, const char* str, int style, int pipePos, int pipe2Pos, int halign)
+void gfxPrint(int x, int y, const char* str, int style, int pipePos, int pipe2Pos, int halign)
 {
 	const int charSize = 16;
 	const int pipeSize = 12;
@@ -119,7 +119,7 @@ void gfxPrint(float x, float y, const char* str, int style, int pipePos, int pip
 	} 
 }
 
-int gfxCharAt( float x, float y, const char* str, int style, float mouseX )
+int gfxCharAt( int x, int y, const char* str, int style, int mouseX )
 {
 	const int charSize = 16;
 

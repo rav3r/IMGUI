@@ -15,11 +15,11 @@
 
 // External functions used by lib
 
-void gfxDrawRectangle(float x, float y, float width, float height, int style, bool border=true, float r=-1, float g=0, float b=0);
+void gfxDrawRectangle(int x, int y, int width, int height, int style, bool border=true, float r=-1, float g=0, float b=0);
 
-void gfxPrint(float x, float y, const char* text, int style, int pipePos = -1, int pipe2Pos = -1, int halign=0);
+void gfxPrint(int x, int y, const char* text, int style, int pipePos = -1, int pipe2Pos = -1, int halign=0);
 
-int gfxCharAt(float x, float y, const char* text, int style, float mouseX);
+int gfxCharAt(int x, int y, const char* text, int style, int mouseX);
 
 void gfxScissor(int x, int y, int width, int height);
 

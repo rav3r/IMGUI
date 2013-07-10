@@ -11,18 +11,7 @@
 
 #define DEFAULT_CHARSET " QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890~!@#$%^&*()_+=-\\|{}[]:;\"'<>,.?/"
 
-namespace igItemStates
-{
-	enum eItemState
-	{
-		NONE			= 0,
-		PRESSED			= 1,
-		HOVER			= 2,
-		TEXT_FOCUS		= 4
-	};
-}
-
-typedef igItemStates::eItemState igItemState;
+// draggable >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 typedef bool (*igAcceptDrop)(void* ptr);
 
@@ -42,14 +31,16 @@ public:
 	virtual ~igDraggable() {}
 };
 
+// dragable <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 class igContext
 {
 private:
 	// clipping mouse area
 	struct
 	{
-		float x, y;
-		float width, height;
+		int x, y;
+		int width, height;
 		bool active;
 	} currentMouseClipping;
 
@@ -68,8 +59,8 @@ private:
 
 	void AdjustNewScrollAreaHeight(int height);
 public:
-	float mouseX;
-	float mouseY;
+	int mouseX;
+	int mouseY;
 
 	int mouseWheel;
 	int leftDown;
@@ -96,8 +87,8 @@ public:
 
 	igRect dragRect;
 	bool dragMoved;
-	float dragX, dragY;
-	float dragMouseX, dragMouseY;
+	int dragX, dragY;
+	int dragMouseX, dragMouseY;
 	std::string dragTitle;
 	igDraggable* dragPointer;
 	bool dragMissing;
@@ -108,26 +99,26 @@ public:
 	void ArrowLeftDown();
 	void ArrowRightDown();
 
-    bool MouseInside(float x, float y, float width, float height);
+    bool MouseInside(int x, int y, int width, int height);
 
 	bool MouseClipped();
 
 	void Begin();
 	igDragged End();
     
-	igButton	Button(igIdent id, float x, float y, float width, float height, const char* title);
-	igCheckbox	Checkbox(igIdent id, float x, float y, float width, float height, bool value);
-	igTextbox	TextBox(igIdent id, float x, float y, float width, float height, std::string& value, const std::string& charset=DEFAULT_CHARSET);
-	igLabel		Label(float x, float y, float width, float height, const std::string& text, igTextAlign valign = igTextAligns::CENTER);
-	igSlider	HSlider(igIdent id, float x, float y, float width, float height, float& value);
-	igMove		Move(igIdent id, float& x, float& y, float width, float height, const char* title);
-	igVScroll	VScroll(igIdent id, float x, float y, float width, float height, float aspect, float& value);
+	igButton	Button	(igIdent id, int x, int y, int width, int height, const char* title);
+	igCheckbox	Checkbox(igIdent id, int x, int y, int width, int height, bool value);
+	igTextbox	TextBox	(igIdent id, int x, int y, int width, int height, std::string& value, const std::string& charset=DEFAULT_CHARSET);
+	igLabel		Label	(int x, int y, int width, int height, const std::string& text, igTextAlign valign = igTextAligns::CENTER);
+	igSlider	HSlider	(igIdent id, int x, int y, int width, int height, float& value);
+	igMove		Move	(igIdent id, int& x, int& y, int width, int height, const char* title);
+	igVScroll	VScroll	(igIdent id, int x, int y, int width, int height, float aspect, float& value);
 
-	igDrag<igDraggable> Drag(igIdent id, float x, float y, float width, float height, const char* title, igDraggable* userData, igAcceptDrop fun=igNeverAcceptDrop);
+	igDrag<igDraggable> Drag(igIdent id, int x, int y, int width, int height, const char* title, igDraggable* userData, igAcceptDrop fun=igNeverAcceptDrop);
 
 	// scroll area
 
-	igAreaBG BeginScrollArea(igIdent id, float x, float y, float width, float height, int& offset, bool scrollbar=true, igColor color=igColor(0.5f, 0.5f, 0.5f));
+	igAreaBG BeginScrollArea(igIdent id, int x, int y, int width, int height, int& offset, bool scrollbar=true, igColor color=igColor(0.5f, 0.5f, 0.5f));
 	igAreaFG EndScrollArea();
 
 	void NewLine();
@@ -159,11 +150,11 @@ public:
 			width = scrollArea.width - currXPos - igSizing::SCROLLAREA_MARGIN_X - igSizing::SCROLLBAR_WIDTH*scrollArea.scrollbar;
 		}
 
-		if(MouseInside((float)x, (float)y, (float)width, igSizing::DRAG_HEIGHT) && dragPointer!=&userData &&
+		if(MouseInside(x, y, width, igSizing::DRAG_HEIGHT) && dragPointer!=&userData &&
 			dynamic_cast<R*>(dragPointer)!=0)
 			canDrop = true;
 
-		igDrag<igDraggable>& result = Drag(id, x, y, width, (float)igSizing::DRAG_HEIGHT, title, &userData, fun);
+		igDrag<igDraggable>& result = Drag(id, x, y, width, igSizing::DRAG_HEIGHT, title, &userData, fun);
 
 		if(maxSize)
 		{

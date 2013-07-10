@@ -1,9 +1,9 @@
 Tab, i shift+tab support dla text boxów
 Posprz¹taæ kod
 igRect dodaæ
-floaty -> inty
 custom widget height
 
++ floaty -> inty
 + Label, left, centered
 + scroll ma byæ rysowany zawsze z prawej
 + Slider na scroll area ma byæ widoczny zawsze

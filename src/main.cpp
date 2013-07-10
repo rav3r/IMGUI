@@ -96,7 +96,7 @@ const igMove& DrawSizer(const igMove& sizer, sf::Texture& tex)
 	igRect r = sizer.rect;
 	sf::Sprite spr(tex);
 	spr.setPosition(sizer.prevX, sizer.prevY);
-	spr.setScale(r.w/tex.getSize().x, r.h/tex.getSize().y);
+	spr.setScale((float)r.w/tex.getSize().x, (float)r.h/tex.getSize().y);
 	gWindow->draw(spr);
 	return sizer;
 }
@@ -221,7 +221,7 @@ int main()
 
 		gui.Begin();
 
-		static float movey = 0;
+		static int movey = 0;
 
 		static int leftScrollbarOffset = 0;
 		DrawAreaBG(gui.BeginScrollArea(GEN_NULL_ID, size.x - size2-8-size1, 0, size2, size.y, leftScrollbarOffset, true, igColor(70/255.0f, 70/255.0f, 70/255.0f)));
@@ -315,7 +315,7 @@ int main()
 		DrawButton(gui.Button(GEN_NULL_ID, "Tex"));
 		DrawAreaFG(gui.EndScrollArea());
 
-		float movex = size.x-size1-8-size2-8;
+		int movex = size.x-size1-8-size2-8;
 		DrawSizer(gui.Move(GEN_NULL_ID, movex, movey, 8, size.y, ""), sizerTex);
 		movey = 0;
 		size2 = size.x-size1-8-movex-8;
